@@ -1,0 +1,27 @@
+﻿# 项目级 Codex 配置
+# 这份配置面向当前研究仓库，控制审批方式、可写范围与子代理并发度。
+
+# 需要额外权限时再申请，由你确认后执行。
+approval_policy = "on-request"
+
+# 允许在工作区内读写，但不直接开放完全访问。
+sandbox_mode = "workspace-write"
+
+[agents]
+# 同时运行的子代理数量上限，避免研究任务把本机资源占满。
+max_threads = 12
+
+# 子代理默认只下探一层，控制任务拆分深度。
+max_depth = 3
+
+[sandbox_workspace_write]
+# shell 命令默认不联网；需要下载公开数据时再单独放开。
+network_access = false
+
+# 允许写入的目录。这里显式列出实验结果、处理后数据、导出物和日志目录。
+writable_roots = [
+  "D:/WorkCode/mathematical/mathematical/results",
+  "D:/WorkCode/mathematical/mathematical/data/processed",
+  "D:/WorkCode/mathematical/mathematical/notebooks/exports",
+  "D:/WorkCode/mathematical/mathematical/logs",
+]

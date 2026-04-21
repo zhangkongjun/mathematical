@@ -1,0 +1,63 @@
+﻿# 用户级 Codex 配置模板
+# 复制到 ~/.codex/config.toml 后生效。
+# 键名不要翻译，注释和说明已改为中文，便于阅读与后续修改。
+
+model = "gpt-5.4"
+model_reasoning_effort = "medium"
+service_tier = "fast"
+
+# 默认需要时再申请更高权限。
+approval_policy = "on-request"
+
+# 默认允许在工作区内读写。
+sandbox_mode = "workspace-write"
+
+# 日常使用缓存搜索；研究时可切到 research profile 使用 live。
+web_search = "cached"
+
+# Windows 下先不启用登录 shell，减少 profile 和环境污染。
+allow_login_shell = false
+
+# 这些标记用于识别项目根目录。
+project_root_markers = [".git", ".codex", "AGENTS.md"]
+
+# 单个项目文档的最大读取字节数。
+project_doc_max_bytes = 65536
+
+[windows]
+# Windows 原生模式下优先使用 elevated sandbox。
+sandbox = "elevated"
+
+[shell_environment_policy]
+# 不主动加载 PowerShell profile，避免环境不稳定。
+experimental_use_profile = false
+
+# 只把必要环境变量传给子进程，减少污染和泄漏面。
+include_only = [
+  "PATH",
+  "SystemRoot",
+  "USERPROFILE",
+  "HOME",
+  "TEMP",
+  "TMP",
+  "COMSPEC",
+  "PATHEXT",
+  "WOLFRAM_HOME",
+  "WOLFRAM_KERNEL",
+  "HTTP_PROXY",
+  "HTTPS_PROXY",
+  "NO_PROXY",
+]
+
+[profiles.research]
+# 研究模式：提高推理强度，并使用实时网页搜索。
+model_reasoning_effort = "high"
+plan_mode_reasoning_effort = "high"
+service_tier = "fast"
+web_search = "live"
+
+[profiles.daily]
+# 日常模式：维持中等推理强度与缓存搜索，响应更稳。
+model_reasoning_effort = "medium"
+service_tier = "fast"
+web_search = "cached"
