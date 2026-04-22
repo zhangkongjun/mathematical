@@ -13,6 +13,7 @@
 - 不要修改 `data/raw/` 下的原始数据。
 - 批量实验必须显式保留参数、随机种子、输入文件名与输出路径。
 - 每次改动完成后，先跑最小可复现实验，再给出结论。
+- 对于已经验证通过的最终代码文件与脚本文件，默认提交到当前本地 Git 仓库，便于追踪仓库状态与回滚；除非用户明确要求，否则不要主动推送到远程仓库。
 - 涉及联网时，先说明用途与数据来源，再执行下载或抓取。
 - 完成所有相关工作后，必须主动结束本次 agent 会话，不保留空闲常驻进程。
 - 若本次任务启动了 `wolframscript`、`WolframKernel`、并行内核、监听器或其他后台进程，结束前必须显式关闭并确认资源已释放。
@@ -40,6 +41,7 @@
 - 与 Wolfram 的简单常规交互默认优先使用 `scripts/run_wl.ps1` 与 `scripts/export_nb.ps1`，不要每次都重新生成新的运行脚本。
 - 常规调用 `.wl` / `.wls` 时默认使用 `scripts/run_wl.ps1`。
 - 常规生成 `.nb` 时默认使用 `scripts/export_nb.ps1`；仅当需要检查现有 `.nb` 时，才在该脚本上显式使用 `-CheckOnly`。
+- 若目标 notebook 需要尽量接近“手工直接在 Wolfram notebook 里键入的可执行代码单元”效果，优先使用 `scripts/export_nb.ps1 -GenerationMode PackageEditorInput`，让 Front End 先把 `.wl` 作为 package editor notebook 打开，再把解析好的源码单元转换为 `.nb` 中的 `Input` 单元。
 - 只有当默认脚本不能满足任务需要时，才在 `scripts/tasks/<task-slug>/` 下新增任务专属脚本或命令。
 - 在默认脚本已能覆盖的场景下，优先补参数、补任务输入或补任务脚本，不要先重新生成新的 wrapper。
 - 默认先用 `wolframscript` 执行 `.wl` 与 `.wls`，不要先花时间搜索 Wolfram 安装路径。
@@ -51,6 +53,7 @@
 ## 默认脚本选择规则
 - 目标是运行现有 `.wl` / `.wls` 并产出数据、图表、表格或日志时，直接使用 `scripts/run_wl.ps1`。
 - 目标是从 `.wl` / `.wls` 生成 `.nb` 时，直接使用 `scripts/export_nb.ps1`，不要先手写一段 `wolframscript` 命令再包一层。
+- 若源文件是 `.wl`，且 notebook 中需要保留中文注释、语法着色以及 `Shift+Enter` 直接执行的体验，优先在 `scripts/export_nb.ps1` 上显式追加 `-GenerationMode PackageEditorInput`，不要退回到“把源码当纯文本写入 notebook 单元”的做法。
 - 目标是检查现有 `.nb` 是否能被 `WolframNB.exe -nogui` 正常打开时，使用 `scripts/export_nb.ps1 -CheckOnly`。
 - 只有在以下情况出现时，才允许新增任务专属脚本或命令：
 - 默认脚本缺少当前任务必需的多阶段流程控制。
@@ -64,6 +67,8 @@
 - `& 'D:\WorkCode\mathematical\mathematical\scripts\run_wl.ps1' -ScriptPath '<script.wls>' -TaskSlug '<task-slug>' -WorkingDirectory '<dir>' -ExecutionTimeoutSec 600`
 - 从 `.wl` / `.wls` 生成 `.nb`：
 - `& 'D:\WorkCode\mathematical\mathematical\scripts\export_nb.ps1' -NotebookPath '<target.nb>' -SourceScriptPath '<script.wls>' -TaskSlug '<task-slug>' -Overwrite`
+- 从 `.wl` 生成带 package editor 风格可执行源码单元的 `.nb`：
+- `& 'D:\WorkCode\mathematical\mathematical\scripts\export_nb.ps1' -NotebookPath '<target.nb>' -SourceScriptPath '<script.wl>' -TaskSlug '<task-slug>' -GenerationMode PackageEditorInput -Overwrite`
 - 检查现有 `.nb`：
 - `& 'D:\WorkCode\mathematical\mathematical\scripts\export_nb.ps1' -NotebookPath '<target.nb>' -CheckOnly`
 
@@ -75,6 +80,8 @@
 - 这是一条强制限制：除非用户明确要求重构或修复仓库级默认入口，否则不要直接改动 `scripts/run_wl.ps1` 与 `scripts/export_nb.ps1`，以避免其它交互再次调用这两个脚本时出现混乱。
 - 对于为当前任务临时生成的最终脚本，运行完成后默认保留在仓库中，由用户手工删除；Codex 默认不要在任务结束时自动删除这些临时脚本。
 - 使用 `export_nb.ps1 -SourceScriptPath ...` 时，源脚本必须把 notebook 写到 `SCIENTIFIC_LAB_NOTEBOOK_OUTPUT` 指向的路径；不要在脚本里硬编码别的 notebook 输出位置。
+- 上一条仅适用于 `export_nb.ps1` 的默认 `ScriptOutput` 模式；若显式使用 `-GenerationMode PackageEditorInput`，则由 `export_nb.ps1` 内部调用通用 helper 把 `.wl` package editor 单元转换为 `.nb` 中的 `Input` 单元，源文件本身不需要再手动写出 notebook 文件。
+- `PackageEditorInput` 模式要求源文件是 `.wl` 或 `.m`；它依赖 Wolfram Front End 对 package editor 单元的解析结果，不适用于 `.wls` 脚本。
 - 若路径不在 `tasks/<task-slug>/` 体系内，Codex 可能无法自动推断 `TaskSlug`；此时应显式传入 `-TaskSlug`。
 - 若脚本路径、工作目录或输出路径存在歧义，优先传绝对路径，不要依赖当前 shell 目录猜测。
 - 若任务需要多个连续步骤，优先把流程写进单个 `.wl` / `.wls` 或任务脚本，再调用默认 PowerShell 脚本；不要把复杂业务逻辑直接塞进命令行参数。

@@ -5,6 +5,9 @@ param(
 
     [string]$SourceScriptPath,
 
+    [ValidateSet("ScriptOutput", "PackageEditorInput")]
+    [string]$GenerationMode = "ScriptOutput",
+
     [Parameter(ValueFromRemainingArguments = $true)]
     [string[]]$SourceScriptArguments = @(),
 
@@ -41,12 +44,15 @@ $ErrorActionPreference = "Stop"
 1. 常规生成 .nb 时，优先调用本脚本，而不是重新拼一条新的 notebook 生成命令。
 2. 生成阶段默认复用 run_wl.ps1，以复用已有目录约定、日志约定和环境变量注入。
 3. 检查阶段默认使用 WolframNB.exe -nogui，尽早发现 notebook 文件层面的明显问题。
+4. 当需要把 `.wl` 源码直接转换成“像手工在 notebook 里键入”的可执行 Input 单元时，
+   可通过 `-GenerationMode PackageEditorInput` 走 package editor 复制链路。
 
 注意事项：
 1. 主用途是“生成 .nb”；仅在已有 notebook 需要检查时，才显式使用 -CheckOnly。
 2. 生成脚本应优先读取 SCIENTIFIC_LAB_NOTEBOOK_OUTPUT，并把 notebook 写到该路径。
 3. WolframNB -nogui 在部分环境中不会自行退出，因此这里采用限时检查；若超时前没有明确错误输出，则视为启动检查通过。
 4. 本脚本不负责 PDF / HTML / Markdown 导出，避免职责再次膨胀。
+5. `PackageEditorInput` 模式要求源文件是 `.wl` 或 `.m`，因为它依赖 Wolfram 的 package editor notebook 解析源码单元。
 #>
 
 function Resolve-PathFlexible {
@@ -270,6 +276,7 @@ notebook = $resolvedNotebookPath
 task_slug = $TaskSlug
 working_directory = $WorkingDirectory
 source_script = $SourceScriptPath
+generation_mode = $GenerationMode
 validation_timeout_sec = $ValidationTimeoutSec
 task_wolfram_env_dir = $taskWolframEnvDir
 "@
@@ -282,6 +289,8 @@ $environmentAssignments = [ordered]@{
     SCIENTIFIC_LAB_RUN_ID = $runId
     SCIENTIFIC_LAB_WOLFRAM_ENV_DIR = $taskWolframEnvDir
     SCIENTIFIC_LAB_NOTEBOOK_OUTPUT = $resolvedNotebookPath
+    SCIENTIFIC_LAB_NOTEBOOK_SOURCE = $null
+    SCIENTIFIC_LAB_NOTEBOOK_TITLE = [System.IO.Path]::GetFileNameWithoutExtension($resolvedNotebookPath)
 }
 
 foreach ($entry in $environmentAssignments.GetEnumerator()) {
@@ -318,7 +327,26 @@ try {
             Remove-Item -LiteralPath $resolvedNotebookPath -Force
         }
 
-        & (Join-Path $PSScriptRoot "run_wl.ps1") -ScriptPath $resolvedSourceScript -TaskSlug $TaskSlug -WorkingDirectory $WorkingDirectory -LogDir $LogDir -WolframScriptPath $resolvedWolframScript @SourceScriptArguments
+        $environmentAssignments["SCIENTIFIC_LAB_NOTEBOOK_SOURCE"] = $resolvedSourceScript
+        [System.Environment]::SetEnvironmentVariable("SCIENTIFIC_LAB_NOTEBOOK_SOURCE", $resolvedSourceScript, "Process")
+
+        if ($GenerationMode -eq "ScriptOutput") {
+            & (Join-Path $PSScriptRoot "run_wl.ps1") -ScriptPath $resolvedSourceScript -TaskSlug $TaskSlug -WorkingDirectory $WorkingDirectory -LogDir $LogDir -WolframScriptPath $resolvedWolframScript @SourceScriptArguments
+        }
+        else {
+            $allowedPackageExtensions = @(".wl", ".m")
+            $sourceExtension = [System.IO.Path]::GetExtension($resolvedSourceScript)
+            if ($allowedPackageExtensions -notcontains $sourceExtension.ToLowerInvariant()) {
+                throw "PackageEditorInput mode requires a .wl or .m source file: $resolvedSourceScript"
+            }
+            if ($SourceScriptArguments.Count -gt 0) {
+                throw "PackageEditorInput mode does not accept SourceScriptArguments. Put notebook behavior in the source file or helper logic instead."
+            }
+
+            $helperScriptPath = Join-Path $repoRoot "wl\common\export_notebook_via_package_editor.wls"
+            & (Join-Path $PSScriptRoot "run_wl.ps1") -ScriptPath $helperScriptPath -TaskSlug $TaskSlug -WorkingDirectory $WorkingDirectory -LogDir $LogDir -WolframScriptPath $resolvedWolframScript
+        }
+
         if ($LASTEXITCODE -ne 0) {
             throw "Notebook generation script failed."
         }
