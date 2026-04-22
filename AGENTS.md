@@ -13,7 +13,14 @@
 - 不要修改 `data/raw/` 下的原始数据。
 - 批量实验必须显式保留参数、随机种子、输入文件名与输出路径。
 - 每次改动完成后，先跑最小可复现实验，再给出结论。
-- 对于已经验证通过的最终代码文件与脚本文件，默认提交到当前本地 Git 仓库，便于追踪仓库状态与回滚；除非用户明确要求，否则不要主动推送到远程仓库。
+- 对于已经验证通过的最终代码文件与脚本文件，默认先保留在工作区，不自动提交，便于用户直接通过 Git diff 检查本次修改范围与具体内容。
+- 只有在用户明确要求时，才执行本地 Git 提交。
+- 除非用户明确要求，否则不要主动推送到远程仓库。
+- 这是一条强制规则：同一任务在多次迭代过程中产生的 probe、debug、repair、compare、analysis、临时导出与其他过程文件，必须与最终交付文件分层存放，不得与最终版文件混放。
+- 这是一条强制规则：最终交付文件默认放入各任务目录下的 `final/` 子目录；过程探索文件默认放入各任务目录下的 `scratch/` 或 `analysis/` 子目录；除非用户明确要求，否则不要把过程文件直接堆在任务根目录。
+- 这是一条强制规则：过程文件默认保留，不自动删除；但必须通过目录分层和命名区分用途，避免干扰最终版文件的识别、比较与使用。
+- 这是一条强制规则：过程文件需要进一步按对话顺序、时间点或迭代批次归类；默认优先使用 `scratch/01-initial/`、`scratch/02-repair/`、`scratch/03-compare/` 这类顺序目录，或使用 `scratch/20260422-1545/` 这类时间目录；若一个阶段内文件较多，可在阶段目录下继续细分。
+- 这是一条强制规则：任务完成时，应在 `docs/tasks/<task-slug>/FINAL_FILES.md` 中明确记录当前推荐查看的最终文件、推荐命令，以及最值得参考的过程文件与其所在目录。
 - 涉及联网时，先说明用途与数据来源，再执行下载或抓取。
 - 完成所有相关工作后，必须主动结束本次 agent 会话，不保留空闲常驻进程。
 - 若本次任务启动了 `wolframscript`、`WolframKernel`、并行内核、监听器或其他后台进程，结束前必须显式关闭并确认资源已释放。
@@ -98,9 +105,11 @@
 
 ## 任务目录约定
 - 每个新研究任务至少建立以下目录：`.codex/wolfram-envs/<task-slug>/`、`wl/tasks/<task-slug>/`、`notebooks/tasks/<task-slug>/`、`scripts/tasks/<task-slug>/`、`data/processed/tasks/<task-slug>/`、`logs/tasks/<task-slug>/`
+- 若任务会经历多次迭代，默认进一步建立以下分层子目录：`wl/tasks/<task-slug>/final/`、`wl/tasks/<task-slug>/scratch/`、`scripts/tasks/<task-slug>/final/`、`scripts/tasks/<task-slug>/scratch/`、`notebooks/tasks/<task-slug>/final/`、`notebooks/tasks/<task-slug>/scratch/`
+- 若过程文件较多，优先在 `scratch/` 下按对话顺序、时间点或阶段继续分层，例如：`scratch/01-initial/`、`scratch/02-debug/`、`scratch/03-compare/`，或 `scratch/20260422-1545/`、`scratch/20260422-1610/`
 - notebook 导出优先写入：`notebooks/exports/tasks/<task-slug>/`
 - 任务结果按类型分开写入：`results/figures/tasks/<task-slug>/`、`results/tables/tasks/<task-slug>/`、`results/reports/tasks/<task-slug>/`
-- 如需任务文档，放到 `docs/tasks/<task-slug>/`
+- 如需任务文档，放到 `docs/tasks/<task-slug>/`；其中 `FINAL_FILES.md` 用于汇总最终交付文件与推荐入口，`DECISIONS.md` 可用于记录关键取舍与过程结论
 - 只有在代码或流程已证明可跨任务复用后，才从 `tasks/<task-slug>/` 上收至 `wl/common/` 或领域目录。
 
 ## Wolfram 快速自检
@@ -127,3 +136,4 @@
 - 表格默认导出为 CSV。
 - notebook 中引用的核心逻辑默认直接保存在单元格里；若以程序方式生成或更新这类单元格，直接使用 `NotebookWrite`，并优先配合 `ToBoxes` 保持语法与排版接近手工编写。若同时维护 `.wl` 或 `.wls` 版本，应保证 notebook 单元格内容与其一致。
 - 对于 Codex 生成且已自动测试通过的最终 Mathematica 代码，优先在模块、函数、关键代码块或 notebook 代码单元附近添加简体中文注释，至少覆盖“这段代码做什么”“使用时要注意什么”“当前限制是什么”。
+- 最终版文件与过程文件应在文件名上继续保持可区分性；最终版优先使用 `final-` 前缀或直接放入 `final/` 目录，过程文件优先使用 `scratch-`、`probe-`、`debug-`、`repair-`、`compare-`、`analysis-` 等前缀，或放入 `scratch/`、`analysis/` 分层目录。
