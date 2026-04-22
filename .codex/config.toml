@@ -1,27 +1,107 @@
-﻿# 项目级 Codex 配置
-# 这份配置面向当前研究仓库，控制审批方式、可写范围与子代理并发度。
+# 项目级 Codex 配置
+# 这份配置面向当前科学研究仓库，默认采用高推理、实时检索与非交互执行策略。
 
-# 需要额外权限时再申请，由你确认后执行。
-approval_policy = "on-request"
+# 默认模型名称。
+# 作用：指定当前工程在未被 profile 或命令行覆盖时优先使用的模型。
+# 可选项：填写当前 Codex 客户端支持的模型名；不同版本和账户可用模型可能不同。
+# 推荐值：研究型工程优先选择当前稳定、能力较强的模型。
+# 风险提示：模型名升级或下线后，旧值可能失效；跨设备同步时要确认目标环境也支持。
+model = "gpt-5.4"
 
-# 允许在工作区内读写，但不直接开放完全访问。
-sandbox_mode = "workspace-write"
+# 默认推理强度。
+# 作用：控制模型在普通任务中的思考深度与耗时。
+# 常见可选项：low、medium、high、xhigh；实际支持集合以当前客户端版本为准。
+# 推荐值：科研仓库默认用 high；只有在批量轻任务或追求响应速度时再降到 medium。
+# 风险提示：强度越高通常越慢、消耗越大；强度越低则更容易漏掉边界条件和验证步骤。
+model_reasoning_effort = "high"
+
+# 代理人格/风格。
+# 作用：影响默认沟通与执行风格，不直接改变权限。
+# 可选项：填写客户端支持的人格名；具体集合以当前客户端版本为准。
+# 推荐值：研究与工程混合场景下使用 pragmatic，通常更直接、更偏执行。
+# 风险提示：人格不会替代安全边界；即使风格保守，也不代表权限自动收紧。
+personality = "pragmatic"
+
+# 审批策略。
+# 作用：决定 Codex 运行命令或越权操作时是否需要人工确认。
+# 可选项：
+# - untrusted：大多数命令都要审批
+# - on-failure：先在沙箱内运行，失败后再请求提权
+# - on-request：默认沙箱运行，需要时显式请求提权
+# - never：不向用户发起审批请求
+# 推荐值：个人可控的科研工作站可用 never；多人共用机器更建议 on-request 或 on-failure。
+# 风险提示：never 会显著提高自动化程度，但也会放大误操作、错误删除、错误覆盖和外部命令副作用的风险。
+approval_policy = "never"
+
+# 文件系统沙箱模式。
+# 作用：决定默认可读写范围与是否启用“完全访问”。
+# 可选项：
+# - read-only：只读
+# - workspace-write：仅工作区内可写
+# - danger-full-access：不做文件系统沙箱限制
+# 推荐值：需要频繁跑实验、改脚本、导出结果的单机科研仓库可用 danger-full-access；更保守时用 workspace-write。
+# 风险提示：danger-full-access 允许访问更广泛的文件系统位置；路径写错、脚本写错或工具链异常时，影响范围会扩大。
+sandbox_mode = "danger-full-access"
+
+# 网页搜索模式。
+# 作用：控制 Codex 做在线检索时更偏向缓存结果还是实时结果。
+# 常见可选项：
+# - cached：优先缓存结果，通常更稳更快
+# - live：尽量实时检索，适合科研资料与新闻类信息
+# 推荐值：科研检索优先 live；若主要做离线开发或追求稳定复现，可切回 cached。
+# 风险提示：live 更依赖外部网络和实时内容，结果可能变化；引用在线信息时要保留来源并注意时效性。
+web_search = "live"
+
+[windows]
+# Windows 沙箱实现策略。
+# 作用：在 Windows 上选择更接近受限权限还是提升权限的运行方式。
+# 常见可选项：
+# - unelevated：非提权模式
+# - elevated：提权模式
+# 推荐值：如果上层已经使用 danger-full-access，通常保持 unelevated 更稳；只有确实需要更高系统权限时再考虑 elevated。
+# 风险提示：elevated 可能带来更大的系统级副作用；某些脚本、注册表或系统路径写入会更难回滚。
+sandbox = "unelevated"
+
+[projects.'D:\WorkCode\mathematical\mathematical']
+# 当前项目的信任等级。
+# 作用：让 Codex 将该仓库视为受信任工程，并应用此项目段的配置。
+# 常见可选项：trusted；其他取值若有，请以当前客户端版本为准。
+# 推荐值：你完全控制、内容可审计、用途明确的本地研究仓库可设为 trusted。
+# 风险提示：将不受信任来源的仓库标成 trusted，会提高提示注入、恶意脚本和误执行外部代码的风险。
+trust_level = "trusted"
 
 [agents]
 # 同时运行的子代理数量上限，避免研究任务把本机资源占满。
-max_threads = 12
+# 作用：限制并行子代理数量，平衡吞吐与本机资源占用。
+# 可选项：正整数；数值越大并行越高，但内存与 CPU 压力也越大。
+# 推荐值：桌面科研环境一般 4 到 12 较实用；当前取值偏保守，优先保证任务完成后资源能快速回落。
+# 风险提示：设置过高会导致模型上下文竞争、磁盘抖动、终端输出混乱，以及本机资源被迅速吃满。
+max_threads = 4
 
 # 子代理默认只下探一层，控制任务拆分深度。
+# 作用：限制子代理继续派生子代理的层数，避免任务树失控。
+# 可选项：正整数；`1` 表示只允许一层，数值越大拆分越深。
+# 推荐值：常规工程与科研任务建议 2 到 3；只有非常明确的流水线分工才考虑更深。
+# 风险提示：深度过大时，任务 ownership 会变模糊，冲突、重复探索和结果整合成本都会上升。
 max_depth = 3
 
 [sandbox_workspace_write]
-# shell 命令默认不联网；需要下载公开数据时再单独放开。
-network_access = false
+# 如果手动切回 workspace-write，仍默认允许联网以支持公开数据抓取与文献检索。
+# 作用：定义 `workspace-write` 模式下网络是否可直接访问。
+# 常见可选项：
+# - true：允许联网
+# - false：禁止联网
+# 说明：有些 Codex 文档把网络能力表述为 `enabled/restricted`，这里在本地 TOML 中通常以布尔值体现。
+# 推荐值：科研型仓库若经常检索公开文献与开放数据，可设为 true；若强调可复现和隔离，可设为 false。
+# 风险提示：联网会引入提示注入、下载错误内容、许可证污染和非确定性结果等风险；涉及外部数据时应保留来源记录。
+network_access = true
 
-# 允许写入的目录。这里显式列出实验结果、处理后数据、导出物和日志目录。
+# 如果手动切回 workspace-write，允许整个研究仓库可写。
+# 作用：当 `sandbox_mode = "workspace-write"` 时，补充声明允许写入的根目录列表。
+# 可选项：路径字符串数组；可填一个或多个绝对路径。
+# 说明：这里写整个仓库根目录，意味着切回 `workspace-write` 时整个项目都可写。
+# 推荐值：研究仓库通常至少放开项目根目录；如果想更保守，可只放开 results、logs、data/processed、notebooks/exports。
+# 风险提示：根目录可写会让源代码、文档、脚本和配置都能被修改；如果你只希望产物目录可写，应拆分为更细的路径列表。
 writable_roots = [
-  "D:/WorkCode/mathematical/mathematical/results",
-  "D:/WorkCode/mathematical/mathematical/data/processed",
-  "D:/WorkCode/mathematical/mathematical/notebooks/exports",
-  "D:/WorkCode/mathematical/mathematical/logs",
+  "D:/WorkCode/mathematical/mathematical",
 ]

@@ -1,38 +1,113 @@
-﻿# 用户级 Codex 配置模板
+# 用户级 Codex 配置模板
 # 复制到 ~/.codex/config.toml 后生效。
 # 键名不要翻译，注释和说明已改为中文，便于阅读与后续修改。
 
+# 默认模型名称。
+# 作用：作为全局默认模型，项目未覆盖时生效。
+# 可选项：填写当前 Codex 客户端支持的模型名；不同版本和账户可用模型可能不同。
+# 推荐值：个人研究环境使用当前稳定的高能力模型；批量轻任务可考虑成本更低的模型。
+# 风险提示：如果在全局层面写死特定模型，升级客户端或切换账号后可能出现不可用或性能变化。
 model = "gpt-5.4"
-model_reasoning_effort = "medium"
+
+# 默认推理强度。
+# 作用：控制普通任务的思考深度与速度权衡。
+# 常见可选项：low、medium、high、xhigh；实际支持集合以当前客户端版本为准。
+# 推荐值：全局默认建议 high；如果你把 Codex 也用于大量琐碎任务，可改成 medium。
+# 风险提示：值越高通常越慢；值越低则更容易忽略边界条件、测试和验证动作。
+model_reasoning_effort = "high"
+
+# 服务档位。
+# 作用：控制响应速度/资源档位，具体效果与账户权限相关。
+# 可选项：以当前客户端与账户支持为准；本模板使用 fast。
+# 推荐值：交互式本地开发一般用 fast；如果未来客户端支持更多档位，再按稳定性和额度做权衡。
+# 风险提示：不同档位的可用性可能因账户或时间变化；切换后延迟、队列和费用表现可能不同。
 service_tier = "fast"
 
-# 默认需要时再申请更高权限。
-approval_policy = "on-request"
+# 默认 profile 名称。
+# 作用：启动 Codex 时若未显式指定 profile，则自动应用这个 profile。
+# 可选项：填写下方 `[profiles.<name>]` 中定义过的名称。
+# 推荐值：你的主用途是科研，因此默认指向 research 合理。
+# 风险提示：如果默认 profile 权限较高，临时打开别的普通仓库时也可能继承较激进的行为。
+default_profile = "research"
 
-# 默认允许在工作区内读写。
-sandbox_mode = "workspace-write"
+# 默认不申请人工授权，直接按当前配置执行。
+# 作用：控制全局审批行为。
+# 可选项：
+# - untrusted：大多数命令都要审批
+# - on-failure：先在沙箱内运行，失败后再请求提权
+# - on-request：默认沙箱运行，需要时显式请求提权
+# - never：不向用户发起审批请求
+# 推荐值：个人单机、受控工程、频繁批处理可用 never；不熟悉的仓库建议 on-request。
+# 风险提示：这是最关键的风险开关之一；never 会减少交互，但也取消了很多人为兜底。
+approval_policy = "never"
 
-# 日常使用缓存搜索；研究时可切到 research profile 使用 live。
-web_search = "cached"
+# 默认启用完全访问模式。
+# 作用：控制全局文件系统沙箱级别。
+# 可选项：
+# - read-only：只读
+# - workspace-write：仅工作区内可写
+# - danger-full-access：不做文件系统沙箱限制
+# 推荐值：如果这台机器主要用于你的科研项目，可用 danger-full-access；否则更建议 workspace-write。
+# 风险提示：全局层面启用 danger-full-access 会影响所有项目，而不仅是当前仓库。
+sandbox_mode = "danger-full-access"
+
+# 默认使用实时网页搜索，适合科研资料与公开数据检索。
+# 作用：控制全局在线搜索偏好。
+# 常见可选项：
+# - cached：优先缓存结果
+# - live：尽量实时检索
+# 推荐值：科研用途默认 live；纯本地开发或复现性优先时可改 cached。
+# 风险提示：实时搜索结果会随时间变化；如果你在做可复现实验，结论里应写明检索日期和来源。
+web_search = "live"
 
 # Windows 下先不启用登录 shell，减少 profile 和环境污染。
+# 作用：决定 shell 是否按登录 shell 语义启动。
+# 可选项：
+# - true：启用登录 shell，可能加载更多用户环境
+# - false：禁用登录 shell，环境更可控
+# 推荐值：研究与实验环境建议 false，避免本地 profile 注入不稳定因素。
+# 风险提示：如果你的 Wolfram、Python 或代理设置只写在 profile 里，false 可能导致命令找不到环境变量。
 allow_login_shell = false
 
 # 这些标记用于识别项目根目录。
+# 作用：Codex 会向上查找这些标记来判断项目根。
+# 可选项：字符串数组；常见可放 `.git`、`.codex`、`AGENTS.md` 等。
+# 推荐值：保留 `.git`、`.codex`、`AGENTS.md` 的组合，既兼容代码仓库，也兼容带说明文档的研究目录。
+# 风险提示：标记过少可能把项目根识别错；标记过多则可能在子目录中误判出多个项目根。
 project_root_markers = [".git", ".codex", "AGENTS.md"]
 
 # 单个项目文档的最大读取字节数。
+# 作用：限制读取 `AGENTS.md` 等项目文档时的最大字节数，防止上下文过大。
+# 可选项：正整数，单位是字节。
+# 推荐值：研究仓库可先用 65536；如果规则文档非常长，再酌情增大。
+# 风险提示：值太小会截断关键约束；值太大则会增加上下文开销，影响响应速度和可读性。
 project_doc_max_bytes = 65536
 
 [windows]
 # Windows 原生模式下优先使用 elevated sandbox。
+# 作用：控制 Windows 上的沙箱实现策略。
+# 常见可选项：
+# - unelevated：非提权模式
+# - elevated：提权模式
+# 推荐值：只有确实需要更多系统级能力时才用 elevated；否则 unelevated 通常更稳。
+# 风险提示：用户级模板如果长期保持 elevated，未来在其他项目里也会默认走更激进的权限路径。
 sandbox = "elevated"
 
 [shell_environment_policy]
 # 不主动加载 PowerShell profile，避免环境不稳定。
+# 作用：决定是否读取 shell profile（如 PowerShell profile）来构造子进程环境。
+# 可选项：
+# - true：使用 profile
+# - false：不使用 profile
+# 推荐值：科研与批处理优先 false，保证实验入口更接近干净环境。
+# 风险提示：禁用 profile 后，依赖 profile 设置的工具链路径、代理或函数别名会失效。
 experimental_use_profile = false
 
 # 只把必要环境变量传给子进程，减少污染和泄漏面。
+# 作用：白名单式保留这些环境变量给 shell / 子进程。
+# 可选项：字符串数组；填环境变量名。
+# 推荐值：仅保留解释器路径、系统路径和必要代理变量；研究环境不建议无上限透传。
+# 风险提示：少传会导致工具不可用，多传则可能泄露凭据、加载意外配置，或让结果依赖本机隐式环境。
 include_only = [
   "PATH",
   "SystemRoot",
@@ -50,14 +125,71 @@ include_only = [
 ]
 
 [profiles.research]
-# 研究模式：提高推理强度，并使用实时网页搜索。
+# 研究模式：高推理、实时检索、完全访问、无需审批。
+# 作用：定义名为 `research` 的可切换配置档；适合科研与批量实验。
+# 可选项：profile 名称可自定义；段内键可覆盖全局同名键。
+# 推荐值：当你的主要工作流是检索资料、改脚本、跑实验、导出结果时，把它设为默认档。
+# 风险提示：这个 profile 权限和自动化程度都很高，不适合未知来源仓库。
+approval_policy = "never"
+
+# 作用：研究 profile 下的文件系统权限。
+# 可选项：read-only、workspace-write、danger-full-access
+# 推荐值：需要完整跑通实验与修脚本时用 danger-full-access；如果只想限制到仓库内，可改 workspace-write。
+# 风险提示：研究 profile 往往是默认 profile，一旦开太大，所有新会话都更激进。
+sandbox_mode = "danger-full-access"
+
+# 作用：研究 profile 下普通任务的推理强度。
+# 常见可选项：low、medium、high、xhigh；实际支持集合以当前客户端版本为准。
+# 推荐值：high。
+# 风险提示：过高会拖慢交互；过低会降低研究任务中发现隐含问题的概率。
 model_reasoning_effort = "high"
+
+# 作用：进入 plan/规划模式时使用的推理强度。
+# 常见可选项：low、medium、high、xhigh；实际支持集合以当前客户端版本为准。
+# 推荐值：high，适合复杂实验设计、路径梳理和多步骤任务拆解。
+# 风险提示：规划强度过高时，长任务会更慢；过低则计划可能过粗、遗漏验证环节。
 plan_mode_reasoning_effort = "high"
+
+# 作用：研究 profile 下的服务档位。
+# 可选项：以当前客户端与账户支持为准；本模板使用 fast。
+# 推荐值：fast。
+# 风险提示：若未来支持更多档位，切换前要确认额度、队列和延迟特征。
 service_tier = "fast"
+
+# 作用：研究 profile 下的搜索模式。
+# 常见可选项：cached、live
+# 推荐值：live。
+# 风险提示：研究结论若依赖实时搜索，应记录时间、来源和版本。
 web_search = "live"
 
 [profiles.daily]
-# 日常模式：维持中等推理强度与缓存搜索，响应更稳。
+# 日常模式：维持较稳的受限运行方式。
+# 作用：定义名为 `daily` 的可切换配置档；适合保守日常开发。
+# 可选项：profile 名称可自定义；段内键可覆盖全局同名键。
+# 推荐值：作为低风险备用档保留。
+# 风险提示：如果长期只用 daily，某些科研场景会反复遇到权限或联网限制，降低效率。
+approval_policy = "on-request"
+
+# 作用：日常 profile 下的文件系统权限。
+# 可选项：read-only、workspace-write、danger-full-access
+# 推荐值：workspace-write。
+# 风险提示：如果你误以为 daily 也具备全权限，自动化流程可能在中途停住等待交互。
+sandbox_mode = "workspace-write"
+
+# 作用：日常 profile 下普通任务的推理强度。
+# 常见可选项：low、medium、high、xhigh；实际支持集合以当前客户端版本为准。
+# 推荐值：medium。
+# 风险提示：如果把 daily 也调到很高，日常轻任务的响应体验会变差。
 model_reasoning_effort = "medium"
+
+# 作用：日常 profile 下的服务档位。
+# 可选项：以当前客户端与账户支持为准；本模板使用 fast。
+# 推荐值：fast。
+# 风险提示：通常风险较低，主要影响的是速度和资源档位表现。
 service_tier = "fast"
+
+# 作用：日常 profile 下的搜索模式。
+# 常见可选项：cached、live
+# 推荐值：cached。
+# 风险提示：cached 对时效性不敏感的开发任务更稳，但不适合查询最新论文、新闻和实时数据。
 web_search = "cached"
