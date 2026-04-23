@@ -24,6 +24,12 @@ If[!DirectoryQ[notebookDir],
   CreateDirectory[notebookDir, CreateIntermediateDirectories -> True];
 ];
 
+(* 合并 CellTags，确保从结构化源文件复制出的说明单元和代码单元在目标 notebook 中仍可被稳定标识。
+   使用注意：
+   1. 旧标签可能是 None、Missing、单个字符串或字符串列表；
+   2. 这里会统一归一化后再去重合并。
+   当前边界：
+   1. 这里只处理标签合并，不处理其他单元选项的语义冲突。 *)
 mergeCellTags[existing_, extra_List] := Module[
   {normalized},
   normalized = Replace[
@@ -39,6 +45,12 @@ mergeCellTags[existing_, extra_List] := Module[
   DeleteDuplicates @ Join[normalized, extra]
 ];
 
+(* 把 package editor 中的 Code 单元转换成普通 notebook 可执行的 Input 单元。
+   代码作用：
+   1. 保留源代码内容；
+   2. 保留除 CellTags 以外的既有选项；
+   3. 将额外标签合并回目标 Input 单元。
+   这里主要使用了 Replace、Cases、Select 和 Cell 构造。 *)
 convertCodeCellToInput[cell_Cell, extraTags_List : {}] := Replace[
   cell,
   Cell[data_, "Code", opts___] :> Module[
@@ -62,12 +74,19 @@ convertCodeCellToInput[cell_Cell, extraTags_List : {}] := Replace[
   ]
 ];
 
+(* 从 Notebook 表达式里收集可见单元。
+   这里显式展开 CellGroupData，是为了让后续转换阶段只面对扁平单元列表。 *)
 collectVisibleCells[elements_List] := Flatten[collectVisibleCell /@ elements, 1];
 
 collectVisibleCell[Cell[CellGroupData[groupCells_List, ___], ___]] := collectVisibleCells[groupCells];
 collectVisibleCell[cell_Cell] := {cell};
 collectVisibleCell[_] := {};
 
+(* 将结构化源 notebook 中的单元转换成目标 notebook 的单元列表。
+   当前策略是：
+   1. 说明性单元原样保留；
+   2. Code 单元转成 Input 单元；
+   3. 第一段主代码补上额外标签，便于后续识别。 *)
 convertSourceCellsToTargetCells[sourceCells_List] := Module[
   {codeIndex = 0},
   sourceCells /. cell_Cell :> Module[{extraTags = {}},
@@ -80,12 +99,15 @@ convertSourceCellsToTargetCells[sourceCells_List] := Module[
   ]
 ];
 
-(* 这个任务脚本只做 Front End 侧的“复制单元格生成 notebook”。
-   关键点：
-   1. 最终说明和代码都先保存在 .wl 源文件里；
-   2. Front End 先按 package editor 方式打开该 .wl；
-   3. 说明单元直接复制，代码单元转换成普通 notebook 可执行的 Input 单元；
-   4. 整个过程不再解析并回写已有 .nb 文本，从而避免中文说明被写坏。 *)
+(* 这个任务脚本只做 Front End 侧的“复制结构化源文件单元并保存 notebook”。
+   设计原因：
+   1. 最终说明和代码都先保存在结构化 `.wl` 源文件里；
+   2. Front End 会以 package editor 方式打开该源文件；
+   3. 说明单元直接复制，Code 单元转换为普通 Input 单元；
+   4. 全流程避免直接重写已有 `.nb` 文本，从而降低中文说明损坏风险。
+   当前边界：
+   1. 该脚本依赖可用的 Wolfram Front End；
+   2. 它解决的是 notebook 结构转换问题，不负责修改课题代码逻辑。 *)
 $FrontEndLaunchCommand =
   "'C:\\Program Files\\Wolfram Research\\Wolfram\\14.3\\WolframNB.exe' -server";
 
