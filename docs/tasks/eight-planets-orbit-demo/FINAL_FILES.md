@@ -13,7 +13,9 @@
    `D:\WorkCode\mathematical\mathematical\notebooks\tasks\eight-planets-orbit-demo\final\final-eight-planets-orbit-demo.nb`
 3. 任务级 notebook 生成入口  
    `D:\WorkCode\mathematical\mathematical\scripts\tasks\eight-planets-orbit-demo\final\final-generate-eight-planets-orbit-doc-notebook.ps1`
-4. 仓库级 notebook 生成入口  
+4. 仓库级 StructuredSource 共享 helper  
+   `D:\WorkCode\mathematical\mathematical\wl\common\export_notebook_via_structured_source.wls`
+5. 仓库级 notebook 生成入口  
    `D:\WorkCode\mathematical\mathematical\scripts\export_nb.ps1`
 
 ## 3. 推荐命令
@@ -60,9 +62,9 @@
 6. 仓库级 StructuredSource 验证日志  
    `D:\WorkCode\mathematical\mathematical\logs\tasks\eight-planets-orbit-demo\export_nb_20260423_094752.log`
 7. 当前轮次最终 notebook 重导出日志  
-   `D:\WorkCode\mathematical\mathematical\logs\tasks\eight-planets-orbit-demo\export_nb_20260423_193443.log`
+   `D:\WorkCode\mathematical\mathematical\logs\tasks\eight-planets-orbit-demo\export_nb_20260423_200209.log`
 8. 当前轮次最小运行验证日志  
-   `D:\WorkCode\mathematical\mathematical\logs\tasks\eight-planets-orbit-demo\run_wl_20260423_193457.log`
+   `D:\WorkCode\mathematical\mathematical\logs\tasks\eight-planets-orbit-demo\run_wl_20260423_200211.log`
 
 ## 5. 推荐回溯顺序
 1. 先读 `DECISIONS.md`，理解当前模型为什么定位为教学近似、为什么采用结构化 `.wl` 同源方案。

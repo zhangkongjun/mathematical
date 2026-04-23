@@ -126,6 +126,16 @@
 (* ::Section:: *)
 (* 最终可执行代码 *)
 
+(* 下方进入最终可执行定义区。
+   代码作用：
+   1. 依次定义参数表、轨道位置函数、尾迹采样函数、视觉缩放函数、静态绘图函数和最终交互入口；
+   2. 保证结构化说明单元之后紧跟的就是可执行主实现，便于 StructuredSource 导出链路稳定复制。
+   使用注意：
+   1. 当前课题的所有说明性调整应优先在上方结构化单元中完成；
+   2. 下方若只做注释、排版或说明性增强，不应改变任何函数签名、参数值和最终 `demoExpr` 的行为。
+   当前边界：
+   1. 本定义区维持教学近似模型，不承担高精度星历计算职责。
+   这里主要会用到 ClearAll 做符号清理，随后用 Association、Module、Graphics、Manipulate 等 Wolfram 功能组织参数、计算轨道并生成交互式可视化。 *)
 ClearAll[
   planetData,
   planetPosition,
@@ -148,14 +158,70 @@ ClearAll[
    2. 因此它只适合驱动当前教学近似模型。
    这里主要使用了 Association、List 和 RGBColor 作为参数组织与视觉配置手段。 *)
 planetData = {
-  <|"Name" -> "水星", "Color" -> RGBColor["#c9b08f"], "OrbitColor" -> RGBColor["#8d7357"], "RadiusAU" -> 0.39, "PeriodYear" -> 0.241, "LabelOffset" -> {0.28, 0.18}|>,
-  <|"Name" -> "金星", "Color" -> RGBColor["#d9b35d"], "OrbitColor" -> RGBColor["#9d7a2f"], "RadiusAU" -> 0.72, "PeriodYear" -> 0.615, "LabelOffset" -> {0.30, -0.20}|>,
-  <|"Name" -> "地球", "Color" -> RGBColor["#4ea5ff"], "OrbitColor" -> RGBColor["#2d6dc7"], "RadiusAU" -> 1.00, "PeriodYear" -> 1.000, "LabelOffset" -> {0.34, 0.22}|>,
-  <|"Name" -> "火星", "Color" -> RGBColor["#d16b4c"], "OrbitColor" -> RGBColor["#9b4127"], "RadiusAU" -> 1.52, "PeriodYear" -> 1.881, "LabelOffset" -> {0.36, -0.24}|>,
-  <|"Name" -> "木星", "Color" -> RGBColor["#d7a46d"], "OrbitColor" -> RGBColor["#9d6d3a"], "RadiusAU" -> 5.20, "PeriodYear" -> 11.86, "LabelOffset" -> {0.55, 0.26}|>,
-  <|"Name" -> "土星", "Color" -> RGBColor["#f0d38a"], "OrbitColor" -> RGBColor["#b39342"], "RadiusAU" -> 9.58, "PeriodYear" -> 29.46, "LabelOffset" -> {0.58, -0.28}|>,
-  <|"Name" -> "天王星", "Color" -> RGBColor["#91d8e4"], "OrbitColor" -> RGBColor["#4a95a3"], "RadiusAU" -> 19.20, "PeriodYear" -> 84.01, "LabelOffset" -> {0.70, 0.32}|>,
-  <|"Name" -> "海王星", "Color" -> RGBColor["#5178ff"], "OrbitColor" -> RGBColor["#2648b8"], "RadiusAU" -> 30.05, "PeriodYear" -> 164.80, "LabelOffset" -> {0.74, -0.34}|>
+  <|
+    "Name" -> "水星",
+    "Color" -> RGBColor["#c9b08f"],
+    "OrbitColor" -> RGBColor["#8d7357"],
+    "RadiusAU" -> 0.39,
+    "PeriodYear" -> 0.241,
+    "LabelOffset" -> {0.28, 0.18}
+  |>,
+  <|
+    "Name" -> "金星",
+    "Color" -> RGBColor["#d9b35d"],
+    "OrbitColor" -> RGBColor["#9d7a2f"],
+    "RadiusAU" -> 0.72,
+    "PeriodYear" -> 0.615,
+    "LabelOffset" -> {0.30, -0.20}
+  |>,
+  <|
+    "Name" -> "地球",
+    "Color" -> RGBColor["#4ea5ff"],
+    "OrbitColor" -> RGBColor["#2d6dc7"],
+    "RadiusAU" -> 1.00,
+    "PeriodYear" -> 1.000,
+    "LabelOffset" -> {0.34, 0.22}
+  |>,
+  <|
+    "Name" -> "火星",
+    "Color" -> RGBColor["#d16b4c"],
+    "OrbitColor" -> RGBColor["#9b4127"],
+    "RadiusAU" -> 1.52,
+    "PeriodYear" -> 1.881,
+    "LabelOffset" -> {0.36, -0.24}
+  |>,
+  <|
+    "Name" -> "木星",
+    "Color" -> RGBColor["#d7a46d"],
+    "OrbitColor" -> RGBColor["#9d6d3a"],
+    "RadiusAU" -> 5.20,
+    "PeriodYear" -> 11.86,
+    "LabelOffset" -> {0.55, 0.26}
+  |>,
+  <|
+    "Name" -> "土星",
+    "Color" -> RGBColor["#f0d38a"],
+    "OrbitColor" -> RGBColor["#b39342"],
+    "RadiusAU" -> 9.58,
+    "PeriodYear" -> 29.46,
+    "LabelOffset" -> {0.58, -0.28}
+  |>,
+  <|
+    "Name" -> "天王星",
+    "Color" -> RGBColor["#91d8e4"],
+    "OrbitColor" -> RGBColor["#4a95a3"],
+    "RadiusAU" -> 19.20,
+    "PeriodYear" -> 84.01,
+    "LabelOffset" -> {0.70, 0.32}
+  |>,
+  <|
+    "Name" -> "海王星",
+    "Color" -> RGBColor["#5178ff"],
+    "OrbitColor" -> RGBColor["#2648b8"],
+    "RadiusAU" -> 30.05,
+    "PeriodYear" -> 164.80,
+    "LabelOffset" -> {0.74, -0.34}
+  |>
 };
 
 (* 使用圆轨道 + 匀角速度近似，计算某颗行星在时刻 t 的二维位置。
@@ -223,7 +289,6 @@ orbitGraphic[t_, showTrails_, zoom_] := Module[
   {visiblePlanets, range},
   visiblePlanets = Select[planetData, #["RadiusAU"] <= zoom &];
   range = 1.08 zoom;
-
   Graphics[
     Join[
       {
@@ -240,7 +305,6 @@ orbitGraphic[t_, showTrails_, zoom_] := Module[
             Directive[planet["OrbitColor"], Opacity[0.55], AbsoluteThickness[1.2]],
             Circle[{0, 0}, planet["RadiusAU"]]
           },
-
           Sequence @@ If[
             showTrails,
             {
@@ -251,7 +315,6 @@ orbitGraphic[t_, showTrails_, zoom_] := Module[
             },
             {}
           ],
-
           With[{pos = planetPosition[planet, t]},
             {
               {
@@ -306,43 +369,34 @@ orbitGraphic[t_, showTrails_, zoom_] := Module[
    这里主要使用了 Manipulate、Animator、TrackedSymbols、SaveDefinitions 和 ControlPlacement。 *)
 demoExpr = Manipulate[
   orbitGraphic[year, showTrails, zoom],
-  {{
-    year,
+  {
+    {year, 0., "模拟年份"},
     0.,
-    "模拟年份"
-   },
-   0.,
-   165.,
-   Animator,
-   AnimationRunning -> False,
-   AnimationRate -> 0.45,
-   AppearanceElements -> {
-     "ProgressSlider",
-     "PlayPauseButton",
-     "FasterSlowerButtons",
-     "DirectionButton"
-   }
+    165.,
+    Animator,
+    AnimationRunning -> False,
+    AnimationRate -> 0.45,
+    AppearanceElements -> {
+      "ProgressSlider",
+      "PlayPauseButton",
+      "FasterSlowerButtons",
+      "DirectionButton"
+    }
   },
-  {{
-    showTrails,
-    True,
-    "显示彩色轨迹"
-   },
-   {True -> "显示", False -> "隐藏"}
+  {
+    {showTrails, True, "显示彩色轨迹"},
+    {True -> "显示", False -> "隐藏"}
   },
-  {{
-    zoom,
-    12.,
-    "视野范围（天文单位）"
-   },
-   {
-     2. -> "内行星",
-     4. -> "火星以内",
-     8. -> "木星以内",
-     12. -> "土星以内",
-     20. -> "天王星以内",
-     32. -> "全景"
-   }
+  {
+    {zoom, 12., "视野范围（天文单位）"},
+    {
+      2. -> "内行星",
+      4. -> "火星以内",
+      8. -> "木星以内",
+      12. -> "土星以内",
+      20. -> "天王星以内",
+      32. -> "全景"
+    }
   },
   TrackedSymbols :> {year, showTrails, zoom},
   SaveDefinitions -> True,

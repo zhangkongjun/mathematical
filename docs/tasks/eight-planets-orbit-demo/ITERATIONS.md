@@ -195,14 +195,52 @@
 3. 最终 notebook 已根据新的结构化说明重新生成。
 4. 本轮不改变任何算法、参数或渲染逻辑，只重写文档与注释。
 
-## 10. 当前沉淀出的稳定规则
+## 10. 第八轮：按最新规则重生成最终 `.wl/.wls/.nb`
+### 10.1 目标
+1. 基于最新的仓库规则文档与 `wl/` 注释规范，再次收敛最终 `.wl/.wls` 的说明性注释。
+2. 在不改动任何代码逻辑的前提下，重新导出最终 notebook。
+3. 用当前源文件重新做最小 `wolframscript` 验证，并把本轮真实日志回写到任务文档。
+
+### 10.2 实现路径
+1. 保留 `final-eight-planets-orbit-demo.wl` 的现有算法、参数和控件定义，只维持最终排版与说明结构。
+2. 为共享 helper `wl/common/export_notebook_via_structured_source.wls` 与 `wl/common/export_notebook_via_package_editor.wls` 补齐中文注释，明确代码作用、使用注意、当前边界与所用 Wolfram 功能的作用。
+3. 通过任务级 PowerShell wrapper 调用仓库级 `scripts/export_nb.ps1 -GenerationMode StructuredSource` 重导出最终 `.nb`。
+4. 顺序执行最小 `wolframscript` 验证，避免并行运行时的临时日志文件同秒冲突。
+
+### 10.3 关键文件
+1. 最终结构化 Wolfram 源文件  
+   `D:\WorkCode\mathematical\mathematical\wl\tasks\eight-planets-orbit-demo\final\final-eight-planets-orbit-demo.wl`
+2. 共享 StructuredSource helper  
+   `D:\WorkCode\mathematical\mathematical\wl\common\export_notebook_via_structured_source.wls`
+3. 共享 PackageEditorInput helper  
+   `D:\WorkCode\mathematical\mathematical\wl\common\export_notebook_via_package_editor.wls`
+4. 最终 notebook  
+   `D:\WorkCode\mathematical\mathematical\notebooks\tasks\eight-planets-orbit-demo\final\final-eight-planets-orbit-demo.nb`
+
+### 10.4 关键日志
+1. 最终 notebook 重导出与启动级检查日志  
+   `D:\WorkCode\mathematical\mathematical\logs\tasks\eight-planets-orbit-demo\export_nb_20260423_200209.log`
+2. 顺序重跑后的最小 `wolframscript` 验证日志  
+   `D:\WorkCode\mathematical\mathematical\logs\tasks\eight-planets-orbit-demo\run_wl_20260423_200211.log`
+
+### 10.5 结果
+1. 最终 `.nb` 已由当前结构化 `.wl` 源文件重新生成。
+2. 共享 `.wls` helper 的中文注释已与最新规则对齐，但任何表达式逻辑均未改变。
+3. 最小 `wolframscript` 验证通过，说明当前最终 `.wl` 仍可按原行为执行。
+
+### 10.6 失败尝试
+1. 曾并行触发任务级 notebook 重导出与单独的 `run_wl.ps1` 最小验证。
+2. 两个流程在同一秒生成了相同命名模式的临时 stdout/stderr 文件，导致 `run_wl.ps1` 清理阶段报错。
+3. 该问题属于验证脚本的临时文件碰撞，不是八大行星课题源码逻辑回归；改为顺序重跑后已通过。
+
+## 11. 当前沉淀出的稳定规则
 1. 不要直接修改最终 `.nb` 文件。
 2. 优先把说明与代码写进同一个结构化 `.wl` 源文件。
 3. 优先使用 `scripts/export_nb.ps1 -GenerationMode StructuredSource` 生成最终 notebook。
 4. 若 notebook 的文案、章节、公式或说明发生变化，应修改 `.wl` 源文件后重新导出。
 5. 重要优化、失败尝试、过程文件与关键日志必须沉淀到 `docs/tasks/<task-slug>/`。
 
-## 11. 最值得回溯的文件
+## 12. 最值得回溯的文件
 1. 稳定最终源码  
    `D:\WorkCode\mathematical\mathematical\wl\tasks\eight-planets-orbit-demo\final\final-eight-planets-orbit-demo.wl`
 2. 稳定最终 notebook  
@@ -214,6 +252,6 @@
 5. 结构化探针验证日志  
    `D:\WorkCode\mathematical\mathematical\logs\tasks\eight-planets-orbit-demo\probe_package_editor_structured_source_20260423_092448.log`
 6. 当前轮次的最终 notebook 重导出日志  
-   `D:\WorkCode\mathematical\mathematical\logs\tasks\eight-planets-orbit-demo\export_nb_20260423_193443.log`
+   `D:\WorkCode\mathematical\mathematical\logs\tasks\eight-planets-orbit-demo\export_nb_20260423_200209.log`
 7. 当前轮次的最小运行验证日志  
-   `D:\WorkCode\mathematical\mathematical\logs\tasks\eight-planets-orbit-demo\run_wl_20260423_193457.log`
+   `D:\WorkCode\mathematical\mathematical\logs\tasks\eight-planets-orbit-demo\run_wl_20260423_200211.log`
