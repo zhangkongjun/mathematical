@@ -1,0 +1,117 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Wolfram 14.3' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       154,          7]
+NotebookDataLength[      3839,        109]
+NotebookOptionsPosition[      2726,         76]
+NotebookOutlinePosition[      3621,        106]
+CellTagsIndexPosition[      3515,        100]
+WindowTitle->probe-package-editor-input
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["probe-package-editor-input", "Title",ExpressionUUID->"3fe55239-dab2-2849-aeb8-18f25b42aa5c"],
+
+Cell["\<\
+\:6e90\:7801\:6587\:4ef6\:ff1aD:\\WorkCode\\mathematical\\mathematical\\wl\\\
+tasks\\codex-smoke\\package_editor_source.wl\
+\>", "Text",ExpressionUUID->"e102ce31-39e0-774c-8b36-332e23c50087"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{
+    "\:8fd9\:4e2a", " ", "smoke", " ", 
+     "\:6e90\:6587\:4ef6\:4e13\:95e8\:7528\:4e8e\:9a8c\:8bc1"}], "\:ff1a", 
+    "\n", "   ", 
+    RowBox[{
+     RowBox[{"1.", " ", 
+      RowBox[{"`export_nb", ".", "ps1"}]}], " ", "-", 
+     RowBox[{
+     "GenerationMode", " ", "PackageEditorInput`", " ", 
+      "\:80fd\:5426\:901a\:8fc7", " ", "package", " ", "editor", " ", 
+      "\:6253\:5f00", " ", 
+      RowBox[{"`", ".", "wl`"}]}]}], "\:ff1b", "\n", "   ", 
+    RowBox[{
+    "2.", " ", 
+     "\:590d\:5236\:51fa\:6765\:7684\:4ee3\:7801\:5355\:5143\:662f\:5426\:4f1a\
+\:88ab\:4fdd\:5b58\:6210\:666e\:901a", " ", "notebook", " ", 
+     "\:91cc\:7684\:53ef\:6267\:884c", " ", "Input", " ", "\:5355\:5143"}], "\:ff1b",
+     "\n", "   ", 
+    RowBox[{"3.", " ", "\:4e2d\:6587\:6ce8\:91ca\:5728\:8f6c\:6362\:5230", " ", 
+     RowBox[{"`", ".", "nb`"}], " ", 
+     "\:540e\:662f\:5426\:4ecd\:7136\:4fdd\:6301\:53ef\:8bfb"}], "\:3002"}], 
+   " ", "*)"}], "\n", "\n", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"ClearAll", "[", "smokeValue", "]"}], ";"}], "\n", "\n", 
+   RowBox[{"(*", " ", 
+    RowBox[{
+    "\:8fd9\:91cc\:6545\:610f\:4fdd\:7559\:4e2d\:6587\:6ce8\:91ca\:548c\:7b80\
+\:5355\:8868\:8fbe\:5f0f", "\:ff0c", "\n", "   ", 
+     RowBox[{
+     "\:4fbf\:4e8e\:89c2\:5bdf\:751f\:6210\:540e\:7684", " ", "notebook", " ",
+       "\:662f\:5426\:4fdd\:7559\:4e86\:63a5\:8fd1\:624b\:5de5\:952e\:5165\
+\:65f6\:7684\:663e\:793a\:6548\:679c"}], "\:3002"}], " ", "*)"}], "\n", 
+   RowBox[{
+    RowBox[{"smokeValue", " ", "=", " ", 
+     RowBox[{"2", " ", "+", " ", "2"}]}], ";"}], "\n", "\n", 
+   "smokeValue"}]}]], "Input",
+ CellTags->{
+  "main-source-input", 
+   "source-code"},ExpressionUUID->"f36a4b0c-d296-a243-9d9a-db1e7a4eea7b"]
+}, Open  ]]
+},
+Saveable->True,
+WindowSize->{582, 657},
+WindowMargins->{{343.5, Automatic}, {Automatic, 39.5}},
+WindowTitle->"probe-package-editor-input",
+Magnification->1.1,
+FrontEndVersion->"14.3 for Microsoft Windows (64-bit) (2025\:5e747\:67088\
+\:65e5)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"448f3c10-aa79-a842-843f-9a041473f9ac"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{
+ "main-source-input"->{
+  Cell[921, 30, 1789, 43, 61, "Input",ExpressionUUID->"f36a4b0c-d296-a243-9d9a-db1e7a4eea7b",
+   CellTags->{"main-source-input", "source-code"}]},
+ "source-code"->{
+  Cell[921, 30, 1789, 43, 61, "Input",ExpressionUUID->"f36a4b0c-d296-a243-9d9a-db1e7a4eea7b",
+   CellTags->{"main-source-input", "source-code"}]}
+ }
+*)
+(*CellTagsIndex
+CellTagsIndex->{
+ {"main-source-input", 3180, 91},
+ {"source-code", 3345, 94}
+ }
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[616, 23, 98, 0, 61, "Title",ExpressionUUID->"3fe55239-dab2-2849-aeb8-18f25b42aa5c"],
+Cell[717, 25, 201, 3, 61, "Text",ExpressionUUID->"e102ce31-39e0-774c-8b36-332e23c50087"],
+Cell[921, 30, 1789, 43, 61, "Input",ExpressionUUID->"f36a4b0c-d296-a243-9d9a-db1e7a4eea7b",
+ CellTags->{"main-source-input", "source-code"}]
+}, Open  ]]
+}
+]
+*)
+

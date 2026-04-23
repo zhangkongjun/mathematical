@@ -5,7 +5,7 @@ param(
 
     [string]$SourceScriptPath,
 
-    [ValidateSet("ScriptOutput", "PackageEditorInput")]
+    [ValidateSet("ScriptOutput", "PackageEditorInput", "StructuredSource")]
     [string]$GenerationMode = "ScriptOutput",
 
     [Parameter(ValueFromRemainingArguments = $true)]
@@ -46,13 +46,16 @@ $ErrorActionPreference = "Stop"
 3. 检查阶段默认使用 WolframNB.exe -nogui，尽早发现 notebook 文件层面的明显问题。
 4. 当需要把 `.wl` 源码直接转换成“像手工在 notebook 里键入”的可执行 Input 单元时，
    可通过 `-GenerationMode PackageEditorInput` 走 package editor 复制链路。
+5. 当 `.wl` 源文件同时包含结构化说明单元与最终代码，并希望把这些说明也稳定复制到 `.nb` 中时，
+   可通过 `-GenerationMode StructuredSource` 走“结构化源文件 -> Front End 复制单元格”链路。
 
 注意事项：
 1. 主用途是“生成 .nb”；仅在已有 notebook 需要检查时，才显式使用 -CheckOnly。
 2. 生成脚本应优先读取 SCIENTIFIC_LAB_NOTEBOOK_OUTPUT，并把 notebook 写到该路径。
 3. WolframNB -nogui 在部分环境中不会自行退出，因此这里采用限时检查；若超时前没有明确错误输出，则视为启动检查通过。
 4. 本脚本不负责 PDF / HTML / Markdown 导出，避免职责再次膨胀。
-5. `PackageEditorInput` 模式要求源文件是 `.wl` 或 `.m`，因为它依赖 Wolfram 的 package editor notebook 解析源码单元。
+5. `PackageEditorInput` 与 `StructuredSource` 模式都要求源文件是 `.wl` 或 `.m`，因为它们依赖 Wolfram 的 package editor notebook 解析源码单元。
+6. `StructuredSource` 模式适用于 `.wl` 中同时存在 `::Title::`、`::Section::`、`::Text::` 等说明单元标记与最终代码单元的场景。
 #>
 
 function Resolve-PathFlexible {
@@ -337,13 +340,18 @@ try {
             $allowedPackageExtensions = @(".wl", ".m")
             $sourceExtension = [System.IO.Path]::GetExtension($resolvedSourceScript)
             if ($allowedPackageExtensions -notcontains $sourceExtension.ToLowerInvariant()) {
-                throw "PackageEditorInput mode requires a .wl or .m source file: $resolvedSourceScript"
+                throw "$GenerationMode mode requires a .wl or .m source file: $resolvedSourceScript"
             }
             if ($SourceScriptArguments.Count -gt 0) {
-                throw "PackageEditorInput mode does not accept SourceScriptArguments. Put notebook behavior in the source file or helper logic instead."
+                throw "$GenerationMode mode does not accept SourceScriptArguments. Put notebook behavior in the source file or helper logic instead."
             }
 
-            $helperScriptPath = Join-Path $repoRoot "wl\common\export_notebook_via_package_editor.wls"
+            $helperScriptPath = if ($GenerationMode -eq "PackageEditorInput") {
+                Join-Path $repoRoot "wl\common\export_notebook_via_package_editor.wls"
+            }
+            else {
+                Join-Path $repoRoot "wl\common\export_notebook_via_structured_source.wls"
+            }
             & (Join-Path $PSScriptRoot "run_wl.ps1") -ScriptPath $helperScriptPath -TaskSlug $TaskSlug -WorkingDirectory $WorkingDirectory -LogDir $LogDir -WolframScriptPath $resolvedWolframScript
         }
 

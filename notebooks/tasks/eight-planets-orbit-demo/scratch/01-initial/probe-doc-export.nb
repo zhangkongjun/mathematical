@@ -1,0 +1,625 @@
+(* Content-type: application/vnd.wolfram.cdf.text *)
+
+(*** Wolfram CDF File ***)
+(* http://www.wolfram.com/cdf *)
+
+(* CreatedBy='Wolfram 14.3' *)
+
+(*************************************************************************)
+(*                                                                       *)
+(*                                                                       *)
+(*  This file was created under the Wolfram Enterprise licensing terms.  *)
+(*                                                                       *)
+(*       For additional information concerning CDF licensing see:        *)
+(*                                                                       *)
+(*        www.wolfram.com/cdf/adopting-cdf/licensing-options.html        *)
+(*                                                                       *)
+(*                                                                       *)
+(*                                                                       *)
+(*************************************************************************)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[      1060,         20]
+NotebookDataLength[     27686,        603]
+NotebookOptionsPosition[     27186,        580]
+NotebookOutlinePosition[     28095,        610]
+CellTagsIndexPosition[     27985,        604]
+WindowTitle->final-eight-planets-orbit-demo
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["final-eight-planets-orbit-demo", "Title",ExpressionUUID->"adffb26e-202a-cc4c-8ec1-1dd52dcf709d"],
+
+Cell["\<\
+\:6e90\:7801\:6587\:4ef6\:ff1aD:\\WorkCode\\mathematical\\mathematical\\wl\\\
+tasks\\eight-planets-orbit-demo\\final\\final-eight-planets-orbit-demo.wl\
+\>", "Text",ExpressionUUID->"c8092a03-773d-2e46-ad93-e736fcc90379"],
+
+Cell["OVERVIEW", "Text",ExpressionUUID->"078122bf-c861-9242-a79f-c6bfadbd6ca3"],
+
+Cell["SEC", "Section",ExpressionUUID->"d1b1d086-df7d-f445-909e-d4700c2ce088"],
+
+Cell["BODY", "Text",ExpressionUUID->"87e27f3a-c99b-eb46-920b-033a8925d55e"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{
+    "\:672c\:6587\:4ef6\:7528\:4e8e\:5728", " ", "notebook", " ", 
+     "\:4e2d\:76f4\:63a5\:751f\:6210", 
+     RowBox[{
+     "\[OpenCurlyDoubleQuote]", 
+      "\:516b\:5927\:884c\:661f\:8fd0\:884c\:8f68\:8ff9\:52a8\:753b", 
+      "\[CloseCurlyDoubleQuote]"}], 
+     "\:7684\:53ef\:6267\:884c\:6e90\:7801\:5355\:5143"}], "\:3002", "\n", 
+    "   ", "\:8bbe\:8ba1\:76ee\:6807\:6709\:4e09\:70b9", "\:ff1a", "\n", 
+    "   ", 
+    RowBox[{
+     RowBox[{"1.", " ", "\:4ee3\:7801\:672c\:8eab\:53ef\:76f4\:63a5\:88ab", " ", 
+      RowBox[{"`export_nb", ".", "ps1"}]}], " ", "-", 
+     RowBox[{
+     "GenerationMode", " ", "PackageEditorInput`", " ", 
+      "\:8f6c\:6210\:6613\:8bfb\:7684", " ", "Input", " ", "\:5355\:5143"}]}],
+     "\:ff1b", "\n", "   ", 
+    RowBox[{
+    "2.", " ", "notebook", " ", 
+     "\:4e2d\:5c55\:793a\:51fa\:6765\:7684\:4ee3\:7801\:4e0e\:5b9e\:9645\:8fd0\
+\:884c\:7684\:52a8\:753b\:903b\:8f91\:4fdd\:6301\:4e00\:81f4"}], "\:ff0c", 
+    "\:4fbf\:4e8e\:9605\:8bfb", "\:3001", 
+    "\:8c03\:8bd5\:548c\:4e8c\:6b21\:4fee\:6539", "\:ff1b", "\n", "   ", 
+    RowBox[{
+    "3.", " ", 
+     "\:753b\:9762\:5f3a\:8c03\:6559\:5b66\:4e0e\:6f14\:793a\:6548\:679c"}], "\:ff0c",
+     "\:4e0d\:8ffd\:6c42\:9ad8\:7cbe\:5ea6\:5929\:4f53\:529b\:5b66\:6c42\:89e3\
+", "\:3002"}], " ", "*)"}], "\n", "\n", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"ClearAll", "[", "\n", "  ", 
+     RowBox[{
+     "planetData", ",", "\n", "  ", "planetPosition", ",", "\n", "  ", 
+      "trailPoints", ",", "\n", "  ", "planetDiskRadius", ",", "\n", "  ", 
+      "orbitGraphic", ",", "\n", "  ", "demoExpr"}], "\n", "]"}], ";"}], "\n",
+    "\n", 
+   RowBox[{"(*", " ", 
+    RowBox[{
+    "\:8fd9\:91cc\:7edf\:4e00\:7ef4\:62a4\:516b\:5927\:884c\:661f\:7684\:663e\
+\:793a\:53c2\:6570", "\:3002", "\n", "   ", "\:6ce8\:610f", "\:ff1a", "\n", 
+     "   ", 
+     RowBox[{
+     "1.", " ", 
+      "\:8f68\:9053\:534a\:5f84\:4f7f\:7528\:5929\:6587\:5355\:4f4d", " ", 
+      "AU", " ", "\:7684\:8fd1\:4f3c\:503c"}], "\:ff1b", "\n", "   ", 
+     RowBox[{
+     "2.", " ", "\:516c\:8f6c\:5468\:671f\:4f7f\:7528\:5730\:7403\:5e74"}], "\:ff1b",
+      "\n", "   ", 
+     RowBox[{
+     "3.", " ", "LabelOffset", " ", 
+      "\:53ea\:670d\:52a1\:4e8e\:753b\:9762\:6392\:7248"}], "\:ff0c", 
+     "\:4e0d\:5177\:6709\:7269\:7406\:610f\:4e49", "\:3002"}], " ", "*)"}], "\n", 
+   RowBox[{
+    RowBox[{"planetData", " ", "=", " ", 
+     RowBox[{"{", "\n", "  ", 
+      RowBox[{
+       RowBox[{"<|", 
+        RowBox[{
+         RowBox[{"\"\<Name\>\"", " ", "->", " ", "\"\<\:6c34\:661f\>\""}], ",",
+          " ", 
+         RowBox[{"\"\<Color\>\"", " ", "->", " ", 
+          RowBox[{"RGBColor", "[", "\"\<#c9b08f\>\"", "]"}]}], ",", " ", 
+         RowBox[{"\"\<OrbitColor\>\"", " ", "->", " ", 
+          RowBox[{"RGBColor", "[", "\"\<#8d7357\>\"", "]"}]}], ",", " ", 
+         RowBox[{"\"\<RadiusAU\>\"", " ", "->", " ", "0.39"}], ",", " ", 
+         RowBox[{"\"\<PeriodYear\>\"", " ", "->", " ", "0.241"}], ",", " ", 
+         RowBox[{"\"\<LabelOffset\>\"", " ", "->", " ", 
+          RowBox[{"{", 
+           RowBox[{"0.28", ",", " ", "0.18"}], "}"}]}]}], "|>"}], ",", "\n", 
+       "  ", 
+       RowBox[{"<|", 
+        RowBox[{
+         RowBox[{"\"\<Name\>\"", " ", "->", " ", "\"\<\:91d1\:661f\>\""}], ",",
+          " ", 
+         RowBox[{"\"\<Color\>\"", " ", "->", " ", 
+          RowBox[{"RGBColor", "[", "\"\<#d9b35d\>\"", "]"}]}], ",", " ", 
+         RowBox[{"\"\<OrbitColor\>\"", " ", "->", " ", 
+          RowBox[{"RGBColor", "[", "\"\<#9d7a2f\>\"", "]"}]}], ",", " ", 
+         RowBox[{"\"\<RadiusAU\>\"", " ", "->", " ", "0.72"}], ",", " ", 
+         RowBox[{"\"\<PeriodYear\>\"", " ", "->", " ", "0.615"}], ",", " ", 
+         RowBox[{"\"\<LabelOffset\>\"", " ", "->", " ", 
+          RowBox[{"{", 
+           RowBox[{"0.30", ",", " ", 
+            RowBox[{"-", "0.20"}]}], "}"}]}]}], "|>"}], ",", "\n", "  ", 
+       RowBox[{"<|", 
+        RowBox[{
+         RowBox[{"\"\<Name\>\"", " ", "->", " ", "\"\<\:5730\:7403\>\""}], ",",
+          " ", 
+         RowBox[{"\"\<Color\>\"", " ", "->", " ", 
+          RowBox[{"RGBColor", "[", "\"\<#4ea5ff\>\"", "]"}]}], ",", " ", 
+         RowBox[{"\"\<OrbitColor\>\"", " ", "->", " ", 
+          RowBox[{"RGBColor", "[", "\"\<#2d6dc7\>\"", "]"}]}], ",", " ", 
+         RowBox[{"\"\<RadiusAU\>\"", " ", "->", " ", "1.00"}], ",", " ", 
+         RowBox[{"\"\<PeriodYear\>\"", " ", "->", " ", "1.000"}], ",", " ", 
+         RowBox[{"\"\<LabelOffset\>\"", " ", "->", " ", 
+          RowBox[{"{", 
+           RowBox[{"0.34", ",", " ", "0.22"}], "}"}]}]}], "|>"}], ",", "\n", 
+       "  ", 
+       RowBox[{"<|", 
+        RowBox[{
+         RowBox[{"\"\<Name\>\"", " ", "->", " ", "\"\<\:706b\:661f\>\""}], ",",
+          " ", 
+         RowBox[{"\"\<Color\>\"", " ", "->", " ", 
+          RowBox[{"RGBColor", "[", "\"\<#d16b4c\>\"", "]"}]}], ",", " ", 
+         RowBox[{"\"\<OrbitColor\>\"", " ", "->", " ", 
+          RowBox[{"RGBColor", "[", "\"\<#9b4127\>\"", "]"}]}], ",", " ", 
+         RowBox[{"\"\<RadiusAU\>\"", " ", "->", " ", "1.52"}], ",", " ", 
+         RowBox[{"\"\<PeriodYear\>\"", " ", "->", " ", "1.881"}], ",", " ", 
+         RowBox[{"\"\<LabelOffset\>\"", " ", "->", " ", 
+          RowBox[{"{", 
+           RowBox[{"0.36", ",", " ", 
+            RowBox[{"-", "0.24"}]}], "}"}]}]}], "|>"}], ",", "\n", "  ", 
+       RowBox[{"<|", 
+        RowBox[{
+         RowBox[{"\"\<Name\>\"", " ", "->", " ", "\"\<\:6728\:661f\>\""}], ",",
+          " ", 
+         RowBox[{"\"\<Color\>\"", " ", "->", " ", 
+          RowBox[{"RGBColor", "[", "\"\<#d7a46d\>\"", "]"}]}], ",", " ", 
+         RowBox[{"\"\<OrbitColor\>\"", " ", "->", " ", 
+          RowBox[{"RGBColor", "[", "\"\<#9d6d3a\>\"", "]"}]}], ",", " ", 
+         RowBox[{"\"\<RadiusAU\>\"", " ", "->", " ", "5.20"}], ",", " ", 
+         RowBox[{"\"\<PeriodYear\>\"", " ", "->", " ", "11.86"}], ",", " ", 
+         RowBox[{"\"\<LabelOffset\>\"", " ", "->", " ", 
+          RowBox[{"{", 
+           RowBox[{"0.55", ",", " ", "0.26"}], "}"}]}]}], "|>"}], ",", "\n", 
+       "  ", 
+       RowBox[{"<|", 
+        RowBox[{
+         RowBox[{"\"\<Name\>\"", " ", "->", " ", "\"\<\:571f\:661f\>\""}], ",",
+          " ", 
+         RowBox[{"\"\<Color\>\"", " ", "->", " ", 
+          RowBox[{"RGBColor", "[", "\"\<#f0d38a\>\"", "]"}]}], ",", " ", 
+         RowBox[{"\"\<OrbitColor\>\"", " ", "->", " ", 
+          RowBox[{"RGBColor", "[", "\"\<#b39342\>\"", "]"}]}], ",", " ", 
+         RowBox[{"\"\<RadiusAU\>\"", " ", "->", " ", "9.58"}], ",", " ", 
+         RowBox[{"\"\<PeriodYear\>\"", " ", "->", " ", "29.46"}], ",", " ", 
+         RowBox[{"\"\<LabelOffset\>\"", " ", "->", " ", 
+          RowBox[{"{", 
+           RowBox[{"0.58", ",", " ", 
+            RowBox[{"-", "0.28"}]}], "}"}]}]}], "|>"}], ",", "\n", "  ", 
+       RowBox[{"<|", 
+        RowBox[{
+         RowBox[{"\"\<Name\>\"", " ", "->", 
+          " ", "\"\<\:5929\:738b\:661f\>\""}], ",", " ", 
+         RowBox[{"\"\<Color\>\"", " ", "->", " ", 
+          RowBox[{"RGBColor", "[", "\"\<#91d8e4\>\"", "]"}]}], ",", " ", 
+         RowBox[{"\"\<OrbitColor\>\"", " ", "->", " ", 
+          RowBox[{"RGBColor", "[", "\"\<#4a95a3\>\"", "]"}]}], ",", " ", 
+         RowBox[{"\"\<RadiusAU\>\"", " ", "->", " ", "19.20"}], ",", " ", 
+         RowBox[{"\"\<PeriodYear\>\"", " ", "->", " ", "84.01"}], ",", " ", 
+         RowBox[{"\"\<LabelOffset\>\"", " ", "->", " ", 
+          RowBox[{"{", 
+           RowBox[{"0.70", ",", " ", "0.32"}], "}"}]}]}], "|>"}], ",", "\n", 
+       "  ", 
+       RowBox[{"<|", 
+        RowBox[{
+         RowBox[{"\"\<Name\>\"", " ", "->", 
+          " ", "\"\<\:6d77\:738b\:661f\>\""}], ",", " ", 
+         RowBox[{"\"\<Color\>\"", " ", "->", " ", 
+          RowBox[{"RGBColor", "[", "\"\<#5178ff\>\"", "]"}]}], ",", " ", 
+         RowBox[{"\"\<OrbitColor\>\"", " ", "->", " ", 
+          RowBox[{"RGBColor", "[", "\"\<#2648b8\>\"", "]"}]}], ",", " ", 
+         RowBox[{"\"\<RadiusAU\>\"", " ", "->", " ", "30.05"}], ",", " ", 
+         RowBox[{"\"\<PeriodYear\>\"", " ", "->", " ", "164.80"}], ",", " ", 
+         RowBox[{"\"\<LabelOffset\>\"", " ", "->", " ", 
+          RowBox[{"{", 
+           RowBox[{"0.74", ",", " ", 
+            RowBox[{"-", "0.34"}]}], "}"}]}]}], "|>"}]}], "\n", "}"}]}], 
+    ";"}], "\n", "\n", 
+   RowBox[{"(*", " ", 
+    RowBox[{
+    "\:4f7f\:7528\:6700\:7b80\:5355\:7684\:5706\:8f68\:9053\:8fd1\:4f3c\:6765\
+\:8ba1\:7b97\:4e8c\:7ef4\:4f4d\:7f6e", "\:3002", "\n", "   ", 
+     "\:8fd9\:4e0d\:662f\:9ad8\:7cbe\:5ea6\:661f\:5386\:6a21\:578b", "\:ff0c",
+      "\:56e0\:6b64\:4e0d\:8003\:8651\:8f68\:9053\:79bb\:5fc3\:7387", "\:3001",
+      "\:8f68\:9053\:503e\:89d2\:548c\:6444\:52a8", "\:3002"}], " ", "*)"}], "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"planetPosition", "[", 
+      RowBox[{"planet_", ",", " ", "t_"}], "]"}], " ", ":=", " ", 
+     RowBox[{"Module", "[", "\n", "  ", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{"theta", " ", "=", " ", 
+         RowBox[{"2", " ", "Pi", " ", 
+          RowBox[{"t", "/", 
+           RowBox[{"planet", "[", "\"\<PeriodYear\>\"", "]"}]}]}]}], "}"}], ",",
+        "\n", "  ", 
+       RowBox[{
+        RowBox[{"planet", "[", "\"\<RadiusAU\>\"", "]"}], " ", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"Cos", "[", "theta", "]"}], ",", " ", 
+          RowBox[{"Sin", "[", "theta", "]"}]}], "}"}]}]}], "\n", "]"}]}], 
+    ";"}], "\n", "\n", 
+   RowBox[{"(*", " ", 
+    RowBox[{
+    "\:4e3a\:6bcf\:9897\:884c\:661f\:4fdd\:7559\:4e00\:5c0f\:6bb5\:6700\:8fd1\
+\:7684\:8f68\:8ff9", "\:ff0c", 
+     RowBox[{"\:589e\:5f3a", 
+      RowBox[{
+      "\[OpenCurlyDoubleQuote]", "\:6b63\:5728\:8fd0\:52a8", 
+       "\[CloseCurlyDoubleQuote]"}], "\:7684\:89c6\:89c9\:611f"}], "\:3002", 
+     "\n", "   ", "\:9650\:5236", "\:ff1a", 
+     "\:8fd9\:91cc\:53ea\:663e\:793a\:6700\:8fd1\:4e00\:6bb5\:5f69\:8272\:5c3e\
+\:8ff9", "\:ff0c", "\:4e0d\:663e\:793a\:5b8c\:6574\:5386\:53f2\:8f68\:8ff9", 
+     "\:3002"}], " ", "*)"}], "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"trailPoints", "[", 
+      RowBox[{"planet_", ",", " ", "t_"}], "]"}], " ", ":=", " ", 
+     RowBox[{"Table", "[", "\n", "  ", 
+      RowBox[{
+       RowBox[{"planetPosition", "[", 
+        RowBox[{"planet", ",", " ", "tau"}], "]"}], ",", "\n", "  ", 
+       RowBox[{"{", "\n", "    ", 
+        RowBox[{"tau", ",", "\n", "    ", 
+         RowBox[{"Max", "[", 
+          RowBox[{"0.", ",", " ", 
+           RowBox[{"t", " ", "-", " ", 
+            RowBox[{"Min", "[", 
+             RowBox[{"1.2", ",", " ", 
+              RowBox[{"planet", "[", "\"\<PeriodYear\>\"", "]"}]}], "]"}]}]}],
+           "]"}], ",", "\n", "    ", "t", ",", "\n", "    ", 
+         RowBox[{"Max", "[", 
+          RowBox[{"0.01", ",", " ", 
+           RowBox[{
+            RowBox[{"planet", "[", "\"\<PeriodYear\>\"", "]"}], "/", 
+            "150."}]}], "]"}]}], "\n", "  ", "}"}]}], "\n", "]"}]}], ";"}], 
+   "\n", "\n", 
+   RowBox[{"(*", " ", 
+    RowBox[{
+    "\:5916\:884c\:661f\:5728\:5168\:666f\:89c6\:56fe\:91cc\:5bb9\:6613\:8fc7\
+\:5c0f", "\:ff0c", 
+     "\:56e0\:6b64\:7528\:4e00\:4e2a\:6e29\:548c\:7684\:5bf9\:6570\:7f29\:653e\
+\:589e\:5f3a\:53ef\:89c1\:6027", "\:3002", "\n", "   ", 
+     "\:8fd9\:540c\:6837\:53ea\:662f\:89c6\:89c9\:5904\:7406", "\:ff0c", 
+     "\:4e0d\:4ee3\:8868\:771f\:5b9e\:5929\:4f53\:5c3a\:5bf8", "\:3002"}], 
+    " ", "*)"}], "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"planetDiskRadius", "[", "planet_", "]"}], " ", ":=", " ", 
+     RowBox[{"0.045", " ", "+", " ", 
+      RowBox[{"0.012", " ", 
+       RowBox[{"Log", "[", 
+        RowBox[{"1", " ", "+", " ", 
+         RowBox[{"planet", "[", "\"\<RadiusAU\>\"", "]"}]}], "]"}]}]}]}], 
+    ";"}], "\n", "\n", 
+   RowBox[{"(*", " ", 
+    RowBox[{
+    "\:8fd9\:662f\:5b9e\:9645\:7684\:7ed8\:56fe\:51fd\:6570", "\:3002", "\n", 
+     "   ", "\:53c2\:6570\:8bf4\:660e", "\:ff1a", "\n", "   ", 
+     RowBox[{"-", " ", "t"}], "\:ff1a", 
+     "\:6a21\:62df\:63a8\:8fdb\:5230\:7b2c\:51e0\:5e74", "\:ff1b", "\n", 
+     "   ", 
+     RowBox[{"-", " ", "showTrails"}], "\:ff1a", 
+     "\:662f\:5426\:663e\:793a\:5f69\:8272\:5c3e\:8ff9", "\:ff1b", "\n", 
+     "   ", 
+     RowBox[{"-", " ", "zoom"}], "\:ff1a", 
+     "\:5f53\:524d\:89c6\:91ce\:534a\:5f84", "\:ff0c", 
+     "\:53ea\:663e\:793a\:8f68\:9053\:534a\:5f84\:4e0d\:8d85\:8fc7\:8be5\:503c\
+\:7684\:884c\:661f", "\:3002"}], " ", "*)"}], "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"orbitGraphic", "[", 
+      RowBox[{"t_", ",", " ", "showTrails_", ",", " ", "zoom_"}], "]"}], " ", 
+     ":=", " ", 
+     RowBox[{"Module", "[", "\n", "  ", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{"visiblePlanets", ",", " ", "range"}], "}"}], ",", "\n", "  ", 
+       RowBox[{
+        RowBox[{"visiblePlanets", " ", "=", " ", 
+         RowBox[{"Select", "[", 
+          RowBox[{"planetData", ",", " ", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"#", "[", "\"\<RadiusAU\>\"", "]"}], " ", "<=", " ", 
+             "zoom"}], " ", "&"}]}], "]"}]}], ";", "\n", "  ", 
+        RowBox[{"range", " ", "=", " ", 
+         RowBox[{"1.08", " ", "zoom"}]}], ";", "\n", "\n", "  ", 
+        RowBox[{"Graphics", "[", "\n", "    ", 
+         RowBox[{
+          RowBox[{"Join", "[", "\n", "      ", 
+           RowBox[{
+            RowBox[{"{", "\n", "        ", 
+             RowBox[{"{", "\n", "          ", 
+              RowBox[{
+               RowBox[{"Glow", "[", 
+                RowBox[{"RGBColor", "[", "\"\<#ffd76a\>\"", "]"}], "]"}], ",",
+                "\n", "          ", 
+               RowBox[{"RGBColor", "[", "\"\<#ffb300\>\"", "]"}], ",", "\n", 
+               "          ", 
+               RowBox[{"EdgeForm", "[", "None", "]"}], ",", "\n", 
+               "          ", 
+               RowBox[{"Disk", "[", 
+                RowBox[{
+                 RowBox[{"{", 
+                  RowBox[{"0", ",", " ", "0"}], "}"}], ",", " ", "0.22"}], 
+                "]"}]}], "\n", "        ", "}"}], "\n", "      ", "}"}], ",", 
+            "\n", "      ", 
+            RowBox[{"Flatten", " ", "@", " ", 
+             RowBox[{"Table", "[", "\n", "        ", 
+              RowBox[{
+               RowBox[{"{", "\n", "          ", 
+                RowBox[{
+                 RowBox[{"{", "\n", "            ", 
+                  RowBox[{
+                   RowBox[{"Directive", "[", 
+                    RowBox[{
+                    RowBox[{"planet", "[", "\"\<OrbitColor\>\"", "]"}], ",", 
+                    " ", 
+                    RowBox[{"Opacity", "[", "0.55", "]"}], ",", " ", 
+                    RowBox[{"AbsoluteThickness", "[", "1.2", "]"}]}], "]"}], ",",
+                    "\n", "            ", 
+                   RowBox[{"Circle", "[", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"0", ",", " ", "0"}], "}"}], ",", " ", 
+                    RowBox[{"planet", "[", "\"\<RadiusAU\>\"", "]"}]}], 
+                    "]"}]}], "\n", "          ", "}"}], ",", "\n", "\n", 
+                 "          ", 
+                 RowBox[{"Sequence", " ", "@@", " ", 
+                  RowBox[{"If", "[", "\n", "            ", 
+                   RowBox[{"showTrails", ",", "\n", "            ", 
+                    RowBox[{"{", "\n", "              ", 
+                    RowBox[{"{", "\n", "                ", 
+                    RowBox[{
+                    RowBox[{"Directive", "[", 
+                    RowBox[{
+                    RowBox[{"planet", "[", "\"\<Color\>\"", "]"}], ",", " ", 
+                    RowBox[{"Opacity", "[", "0.38", "]"}], ",", " ", 
+                    RowBox[{"AbsoluteThickness", "[", "2.0", "]"}]}], "]"}], ",",
+                     "\n", "                ", 
+                    RowBox[{"Line", "[", 
+                    RowBox[{"trailPoints", "[", 
+                    RowBox[{"planet", ",", " ", "t"}], "]"}], "]"}]}], "\n", 
+                    "              ", "}"}], "\n", "            ", "}"}], ",",
+                     "\n", "            ", 
+                    RowBox[{"{", "}"}]}], "\n", "          ", "]"}]}], ",", 
+                 "\n", "\n", "          ", 
+                 RowBox[{"With", "[", 
+                  RowBox[{
+                   RowBox[{"{", 
+                    RowBox[{"pos", " ", "=", " ", 
+                    RowBox[{"planetPosition", "[", 
+                    RowBox[{"planet", ",", " ", "t"}], "]"}]}], "}"}], ",", 
+                   "\n", "            ", 
+                   RowBox[{"{", "\n", "              ", 
+                    RowBox[{
+                    RowBox[{"{", "\n", "                ", 
+                    RowBox[{
+                    RowBox[{"EdgeForm", "[", 
+                    RowBox[{"Directive", "[", 
+                    RowBox[{"White", ",", " ", 
+                    RowBox[{"Opacity", "[", "0.18", "]"}]}], "]"}], "]"}], ",",
+                     "\n", "                ", 
+                    RowBox[{"planet", "[", "\"\<Color\>\"", "]"}], ",", "\n", 
+                    "                ", 
+                    RowBox[{"Disk", "[", 
+                    RowBox[{"pos", ",", " ", 
+                    RowBox[{"planetDiskRadius", "[", "planet", "]"}]}], 
+                    "]"}]}], "\n", "              ", "}"}], ",", "\n", 
+                    "              ", 
+                    RowBox[{"Text", "[", "\n", "                ", 
+                    RowBox[{
+                    RowBox[{"Style", "[", "\n", "                  ", 
+                    RowBox[{
+                    RowBox[{"planet", "[", "\"\<Name\>\"", "]"}], ",", "\n", 
+                    "                  ", "12", ",", "\n", 
+                    "                  ", "Bold", ",", "\n", 
+                    "                  ", "White", ",", "\n", 
+                    "                  ", 
+                    RowBox[{
+                    "FontFamily", " ", "->", " ", "\"\<Microsoft YaHei\>\""}],
+                     ",", "\n", "                  ", 
+                    RowBox[{"Background", " ", "->", " ", 
+                    RowBox[{"Darker", "[", 
+                    RowBox[{
+                    RowBox[{"planet", "[", "\"\<Color\>\"", "]"}], ",", " ", 
+                    "0.78"}], "]"}]}]}], "\n", "                ", "]"}], ",",
+                     "\n", "                ", 
+                    RowBox[{"pos", " ", "+", " ", 
+                    RowBox[{"planet", "[", "\"\<LabelOffset\>\"", "]"}]}]}], 
+                    "\n", "              ", "]"}]}], "\n", "            ", 
+                    "}"}]}], "\n", "          ", "]"}]}], "\n", "        ", 
+                "}"}], ",", "\n", "        ", 
+               RowBox[{"{", 
+                RowBox[{"planet", ",", " ", "visiblePlanets"}], "}"}]}], "\n",
+               "      ", "]"}]}]}], "\n", "    ", "]"}], ",", "\n", "    ", 
+          RowBox[{"PlotRange", " ", "->", " ", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"-", "range"}], ",", " ", "range"}], "}"}], ",", " ", 
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"-", "range"}], ",", " ", "range"}], "}"}]}], "}"}]}], 
+          ",", "\n", "    ", 
+          RowBox[{"PlotRangePadding", " ", "->", " ", 
+           RowBox[{"Scaled", "[", "0.04", "]"}]}], ",", "\n", "    ", 
+          RowBox[{"Background", " ", "->", " ", 
+           RowBox[{"RGBColor", "[", "\"\<#050814\>\"", "]"}]}], ",", "\n", 
+          "    ", 
+          RowBox[{"ImagePadding", " ", "->", " ", "42"}], ",", "\n", "    ", 
+          RowBox[{"ImageSize", " ", "->", " ", "860"}], ",", "\n", "    ", 
+          RowBox[{"Axes", " ", "->", " ", "False"}], ",", "\n", "    ", 
+          RowBox[{"PlotLabel", " ", "->", " ", 
+           RowBox[{"Style", "[", "\n", "      ", 
+            
+            RowBox[{"\"\<\:592a\:9633\:7cfb\:516b\:5927\:884c\:661f\:5f69\
+\:8272\:8fd0\:884c\:8f68\:8ff9\>\"", ",", "\n", "      ", "18", ",", "\n", 
+             "      ", "Bold", ",", "\n", "      ", "White", ",", "\n", 
+             "      ", 
+             RowBox[{
+             "FontFamily", " ", "->", " ", "\"\<Microsoft YaHei\>\""}]}], 
+            "\n", "    ", "]"}]}]}], "\n", "  ", "]"}]}]}], "\n", "]"}]}], 
+    ";"}], "\n", "\n", 
+   RowBox[{"(*", " ", 
+    RowBox[{
+     RowBox[{
+     "Manipulate", " ", "\:8d1f\:8d23\:63d0\:4f9b\:4ea4\:4e92\:5165\:53e3"}], 
+     "\:3002", "\n", "   ", 
+     RowBox[{
+     "\:5efa\:8bae\:5728", " ", "notebook", " ", 
+      "\:4e2d\:76f4\:63a5\:8fd0\:884c\:672c\:5355\:5143\:540e\:8c03\:8bd5\
+\:4ee5\:4e0b\:5185\:5bb9"}], "\:ff1a", "\n", "   ", 
+     RowBox[{
+     "1.", " ", "\:4fee\:6539", " ", "planetData", " ", 
+      "\:4e2d\:7684\:989c\:8272\:548c\:6807\:7b7e\:504f\:79fb"}], "\:ff1b", 
+     "\n", "   ", 
+     RowBox[{
+     "2.", " ", "\:8c03\:6574", " ", "trailPoints", " ", 
+      "\:7684\:5c3e\:8ff9\:957f\:5ea6\:548c\:91c7\:6837\:6b65\:957f"}], "\:ff1b",
+      "\n", "   ", 
+     RowBox[{"3.", " ", "\:8c03\:6574", " ", "zoom", " ", "\:9009\:9879"}], "\:ff0c",
+      "\:89c2\:5bdf\:4e0d\:540c\:5c42\:7ea7\:7684\:8f68\:9053\:5e03\:5c40", 
+     "\:3002"}], " ", "*)"}], "\n", 
+   RowBox[{
+    RowBox[{"demoExpr", " ", "=", " ", 
+     RowBox[{"Manipulate", "[", "\n", "  ", 
+      RowBox[{
+       RowBox[{"orbitGraphic", "[", 
+        RowBox[{"year", ",", " ", "showTrails", ",", " ", "zoom"}], "]"}], ",",
+        "\n", "  ", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"{", "\n", "    ", 
+          RowBox[{
+          "year", ",", "\n", "    ", "0.", ",", "\n", 
+           "    ", "\"\<\:6a21\:62df\:5e74\:4efd\>\""}], "\n", "   ", "}"}], ",",
+          "\n", "   ", "0.", ",", "\n", "   ", "165.", ",", "\n", "   ", 
+         "Animator", ",", "\n", "   ", 
+         RowBox[{"AnimationRunning", " ", "->", " ", "False"}], ",", "\n", 
+         "   ", 
+         RowBox[{"AnimationRate", " ", "->", " ", "0.45"}], ",", "\n", "   ", 
+         
+         RowBox[{"AppearanceElements", " ", "->", " ", 
+          RowBox[{"{", "\n", "     ", 
+           
+           RowBox[{"\"\<ProgressSlider\>\"", ",", "\n", 
+            "     ", "\"\<PlayPauseButton\>\"", ",", "\n", 
+            "     ", "\"\<FasterSlowerButtons\>\"", ",", "\n", 
+            "     ", "\"\<DirectionButton\>\""}], "\n", "   ", "}"}]}]}], 
+        "\n", "  ", "}"}], ",", "\n", "  ", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"{", "\n", "    ", 
+          RowBox[{
+          "showTrails", ",", "\n", "    ", "True", ",", "\n", 
+           "    ", "\"\<\:663e\:793a\:5f69\:8272\:8f68\:8ff9\>\""}], "\n", 
+          "   ", "}"}], ",", "\n", "   ", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"True", " ", "->", " ", "\"\<\:663e\:793a\>\""}], ",", " ", 
+           RowBox[{"False", " ", "->", " ", "\"\<\:9690\:85cf\>\""}]}], 
+          "}"}]}], "\n", "  ", "}"}], ",", "\n", "  ", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"{", "\n", "    ", 
+          RowBox[{
+          "zoom", ",", "\n", "    ", "12.", ",", "\n", 
+           "    ", "\"\<\:89c6\:91ce\:8303\:56f4\:ff08\:5929\:6587\:5355\:4f4d\
+\:ff09\>\""}], "\n", "   ", "}"}], ",", "\n", "   ", 
+         RowBox[{"{", "\n", "     ", 
+          RowBox[{
+           RowBox[{"2.", " ", "->", " ", "\"\<\:5185\:884c\:661f\>\""}], ",", 
+           "\n", "     ", 
+           RowBox[{"4.", " ", "->", " ", "\"\<\:706b\:661f\:4ee5\:5185\>\""}],
+            ",", "\n", "     ", 
+           RowBox[{"8.", " ", "->", " ", "\"\<\:6728\:661f\:4ee5\:5185\>\""}],
+            ",", "\n", "     ", 
+           RowBox[{
+           "12.", " ", "->", " ", "\"\<\:571f\:661f\:4ee5\:5185\>\""}], ",", 
+           "\n", "     ", 
+           RowBox[{
+           "20.", " ", "->", " ", "\"\<\:5929\:738b\:661f\:4ee5\:5185\>\""}], 
+           ",", "\n", "     ", 
+           RowBox[{"32.", " ", "->", " ", "\"\<\:5168\:666f\>\""}]}], "\n", 
+          "   ", "}"}]}], "\n", "  ", "}"}], ",", "\n", "  ", 
+       RowBox[{"TrackedSymbols", " ", ":>", " ", 
+        RowBox[{"{", 
+         RowBox[{"year", ",", " ", "showTrails", ",", " ", "zoom"}], "}"}]}], 
+       ",", "\n", "  ", 
+       RowBox[{"SaveDefinitions", " ", "->", " ", "True"}], ",", "\n", "  ", 
+       RowBox[{"ControlPlacement", " ", "->", " ", "Left"}], ",", "\n", "  ", 
+       
+       RowBox[{"Paneled", " ", "->", " ", "False"}], ",", "\n", "  ", 
+       RowBox[{"SynchronousUpdating", " ", "->", " ", "False"}]}], "\n", 
+      "]"}]}], ";"}], "\n", "\n", 
+   RowBox[{"(*", " ", 
+    RowBox[{
+     RowBox[{
+     "\:7ea6\:5b9a\:628a", " ", "demoExpr", " ", 
+      "\:4f5c\:4e3a\:6587\:4ef6\:6700\:540e\:4e00\:4e2a\:8868\:8fbe\:5f0f"}], 
+     "\:3002", "\n", "   ", 
+     RowBox[{
+     "\:8fd9\:6837\:65e0\:8bba\:901a\:8fc7", " ", "wolframscript", " ", 
+      "\:8fd8\:662f", " ", "notebook", " ", "\:76f4\:63a5\:6267\:884c"}], "\:ff0c",
+      "\:90fd\:4f1a\:5f97\:5230\:540c\:4e00\:4efd\:4ea4\:4e92\:52a8\:753b", 
+     "\:3002"}], " ", "*)"}], "\n", "demoExpr"}]}]], "Input",
+ CellTags->{
+  "main-source-input", 
+   "source-code"},ExpressionUUID->"a815a3b2-c999-5343-b0b6-0e44255e10d8"]
+}, Open  ]]
+},
+Saveable->True,
+WindowSize->{582, 657},
+WindowMargins->{{343.5, Automatic}, {Automatic, 39.5}},
+WindowTitle->"final-eight-planets-orbit-demo",
+Magnification->1.1,
+FrontEndVersion->"14.3 for Microsoft Windows (64-bit) (2025\:5e747\:67088\
+\:65e5)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"ed81978e-c8ca-8d40-82aa-ca04655b7753"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{
+ "main-source-input"->{
+  Cell[2104, 49, 25066, 528, 77, "Input",ExpressionUUID->"a815a3b2-c999-5343-b0b6-0e44255e10d8",
+   CellTags->{"main-source-input", "source-code"}]},
+ "source-code"->{
+  Cell[2104, 49, 25066, 528, 77, "Input",ExpressionUUID->"a815a3b2-c999-5343-b0b6-0e44255e10d8",
+   CellTags->{"main-source-input", "source-code"}]}
+ }
+*)
+(*CellTagsIndex
+CellTagsIndex->{
+ {"main-source-input", 27644, 595},
+ {"source-code", 27812, 598}
+ }
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[1526, 36, 102, 0, 77, "Title",ExpressionUUID->"adffb26e-202a-cc4c-8ec1-1dd52dcf709d"],
+Cell[1631, 38, 230, 3, 77, "Text",ExpressionUUID->"c8092a03-773d-2e46-ad93-e736fcc90379"],
+Cell[1864, 43, 79, 0, 77, "Text",ExpressionUUID->"078122bf-c861-9242-a79f-c6bfadbd6ca3"],
+Cell[1946, 45, 77, 0, 77, "Section",ExpressionUUID->"d1b1d086-df7d-f445-909e-d4700c2ce088"],
+Cell[2026, 47, 75, 0, 77, "Text",ExpressionUUID->"87e27f3a-c99b-eb46-920b-033a8925d55e"],
+Cell[2104, 49, 25066, 528, 77, "Input",ExpressionUUID->"a815a3b2-c999-5343-b0b6-0e44255e10d8",
+ CellTags->{"main-source-input", "source-code"}]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)
