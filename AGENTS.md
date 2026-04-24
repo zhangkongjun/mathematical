@@ -13,9 +13,20 @@
 - 若确需保留英文内容，必须以简体中文为主，并明确英文只是辅助说明。
 - 不能把稳定规则只留在聊天答复里，必须回写到 Markdown 文档。
 
+## Windows 命令与脚本约定
+- 本项目运行在 Windows 11 本机环境。命令入口优先使用 PowerShell 7，也就是 `pwsh`；不要默认使用旧版 `powershell`。
+- 简单命令可以直接通过 `pwsh` 执行，例如 `git`、`mvn`、`java`、`py`、`wolframscript`。
+- 复杂逻辑、批量扫描、批量修改、文件解析、日志分析、数据处理、科研实验编排，必须优先写成 Python 脚本，不要堆叠为复杂的 PowerShell 命令。
+- Python 优先使用 `.\.venv\Scripts\python.exe`。若虚拟环境不存在，先执行 `py -3 -m venv .venv` 创建，再升级 `pip`。
+- Python 中的所有文本读写都必须显式使用 `UTF-8`。
+- Python 调用外部命令时，优先使用 `subprocess.run` 的列表参数；不要默认使用 `shell=True`。
+- 不要生成复杂的一行 PowerShell 管道；超过 10 行的逻辑默认改写为 Python 脚本。
+- 批量修改文件前，必须先预演并展示命中文件列表。
+- 删除、覆盖、移动大量文件前，必须先说明计划。
+- 任务完成后，必须使用 `git status` 与 `git diff` 展示改动摘要。
+
 ## 通用工作流
 - 修改前先阅读目录结构、现有脚本和任务文档，不要先改文件再补理解。
-- 默认使用 PowerShell。
 - 可复现实验与批处理优先走 `wolframscript`。
 - `data/raw/` 视为只读。
 - 输出统一写入 `results/`、`notebooks/exports/`、`data/processed/` 或 `logs/`。
@@ -47,6 +58,7 @@
 - 若 notebook 由源码自动生成，说明文档默认先写入 `.wl` 或 `.wls`，再生成 `.nb`。
 - 若只是调整章节、文案、列表格式、公式表达或代码展示方式，默认回到源文件或生成链路中修改，不要直接补丁 `.nb`。
 - `scripts/run_wl.ps1` 与 `scripts/export_nb.ps1` 是仓库级默认入口；除非用户明确要求修复、重构或升级，否则不要直接修改这两个脚本。
+- 调用 `scripts/run_wl.ps1` 与 `scripts/export_nb.ps1` 时，默认使用 `pwsh` 作为命令入口，不要默认使用旧版 `powershell`。
 - 若默认入口不能覆盖当前任务，再在 `scripts/tasks/<task-slug>/` 下新增任务脚本。
 - `export_nb.ps1` 的具体模式选择、命令模板与注意事项，以 `scripts/AGENTS.md` 为准；notebook 内容组织与说明结构，以 `notebooks/AGENTS.md` 为准。
 

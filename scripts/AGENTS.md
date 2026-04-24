@@ -9,6 +9,7 @@
 
 ## 默认原则
 - 优先复用 `scripts/run_wl.ps1` 与 `scripts/export_nb.ps1`。
+- 调用 `scripts/run_wl.ps1` 与 `scripts/export_nb.ps1` 时，默认使用 `pwsh` 作为命令入口，不要默认使用旧版 `powershell`。
 - 只有默认入口无法覆盖当前任务时，才在 `scripts/tasks/<task-slug>/` 下新增任务脚本。
 - 脚本职责要单一明确。
 - 可复现实验所需的关键路径和参数应显式可见。
@@ -45,13 +46,13 @@
 
 ## 推荐命令
 - 运行 `.wl` / `.wls`
-  - `& 'D:\WorkCode\mathematical\mathematical\scripts\run_wl.ps1' -ScriptPath '<script.wls>' -TaskSlug '<task-slug>'`
+  - `pwsh -File 'D:\WorkCode\mathematical\mathematical\scripts\run_wl.ps1' -ScriptPath '<script.wls>' -TaskSlug '<task-slug>'`
 - 生成 `.nb`
-  - `& 'D:\WorkCode\mathematical\mathematical\scripts\export_nb.ps1' -NotebookPath '<target.nb>' -SourceScriptPath '<script.wls>' -TaskSlug '<task-slug>' -Overwrite`
+  - `pwsh -File 'D:\WorkCode\mathematical\mathematical\scripts\export_nb.ps1' -NotebookPath '<target.nb>' -SourceScriptPath '<script.wls>' -TaskSlug '<task-slug>' -Overwrite`
 - 通过 `StructuredSource` 生成 `.nb`
-  - `& 'D:\WorkCode\mathematical\mathematical\scripts\export_nb.ps1' -NotebookPath '<target.nb>' -SourceScriptPath '<script.wl>' -TaskSlug '<task-slug>' -GenerationMode StructuredSource -Overwrite`
+  - `pwsh -File 'D:\WorkCode\mathematical\mathematical\scripts\export_nb.ps1' -NotebookPath '<target.nb>' -SourceScriptPath '<script.wl>' -TaskSlug '<task-slug>' -GenerationMode StructuredSource -Overwrite`
 - 检查现有 `.nb`
-  - `& 'D:\WorkCode\mathematical\mathematical\scripts\export_nb.ps1' -NotebookPath '<target.nb>' -CheckOnly`
+  - `pwsh -File 'D:\WorkCode\mathematical\mathematical\scripts\export_nb.ps1' -NotebookPath '<target.nb>' -CheckOnly`
 
 ## 使用注意事项
 - 只要路径可能有歧义，就传绝对路径。
